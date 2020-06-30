@@ -1,7 +1,7 @@
 # Download for Windows
 https://github.com/Airkek/Youtube-Viewers/releases/download/v1.0/Release.zip
 
-![Screenshot](https://i.imgur.com/r89Aa3g.png)
+![Screenshot](https://i.imgur.com/ifpcVvB.png)
 
 # Whats the ID of a Livestream?
 
