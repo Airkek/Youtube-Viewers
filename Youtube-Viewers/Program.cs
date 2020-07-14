@@ -34,6 +34,7 @@ namespace Youtube_Viewers
     \::\ \      \::\ \    \::(_)  \ \    \:\_\ \ \      \::\ \ 
      \__\/       \__\/     \_______\/     \_____\/       \__\/ ";
 
+        [STAThread]
         static void Main(string[] args)
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
