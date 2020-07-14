@@ -49,11 +49,6 @@ namespace Youtube_Viewers
             Console.ForegroundColor = ConsoleColor.Cyan;
             threadsCount = Convert.ToInt32(Console.ReadLine().Trim());
 
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write("Hold Viewers?\r\n1: Yes\r\n2: No\r\nAnswer: ");
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            holdViewers = Console.ReadLine().Trim() == "1";
-
             while (true)
             {
                 Console.ForegroundColor = ConsoleColor.White;
