@@ -1,12 +1,14 @@
 ﻿using Leaf.xNet;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Configuration;
 using System.Web.Util;
+using System.Windows.Forms;
 using Youtube_Viewers.Helpers;
 
 namespace Youtube_Viewers
@@ -16,11 +18,13 @@ namespace Youtube_Viewers
         static string id;
         static int threadsCount;
         static ProxyScraper scraper;
+        public static int proxyType = 0;
         static Random random = new Random();
         static Object locker = new Object();
         static Object loglocker = new Object();
         static int botted = 0;
         static int errors = 0;
+        static bool holdViewers = true;
 
 
         static string intro = @"/_/\/_/\   /________/\ /_______/\     /_____/\     /________/\ 
@@ -34,8 +38,6 @@ namespace Youtube_Viewers
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine(intro);
-            
-            scraper = new ProxyScraper();
 
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("Enter Video ID: ");
@@ -46,6 +48,63 @@ namespace Youtube_Viewers
             Console.Write("Enter Threads Count: ");
             Console.ForegroundColor = ConsoleColor.Cyan;
             threadsCount = Convert.ToInt32(Console.ReadLine().Trim());
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("Hold Viewers?\r\n1: Yes\r\n2: No\r\nAnswer: ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            holdViewers = Console.ReadLine().Trim() == "1";
+
+            while (true)
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("Select proxy type:\r\n0. Public (Http/s autoscrape)\r\n1. Http/s\r\n2. Socks4\r\n3. Socks5");
+                Console.Write("Your choice: ");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                ConsoleKey k = Console.ReadKey().Key;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine();
+                if (k == ConsoleKey.D0)
+                {
+                    Console.WriteLine("Selected public proxy");
+                    proxyType = 0;
+                    break;
+                }
+                if (k == ConsoleKey.D1)
+                {
+                    Console.WriteLine("Selected Http/s type of proxy");
+                    proxyType = 1;
+                    break;
+                }
+                else if (k == ConsoleKey.D2)
+                {
+                    Console.WriteLine("Selected Socks4 type of proxy");
+                    proxyType = 2;
+                    break;
+                }
+                else if (k == ConsoleKey.D3)
+                {
+                    Console.WriteLine("Selected Socks5 type of proxy");
+                    proxyType = 3;
+                    break;
+                }
+            }
+
+            if(proxyType != 0)
+            {
+                Console.WriteLine("Open file with proxy list");
+
+                OpenFileDialog dialog = new OpenFileDialog();
+                dialog.Filter = "Proxy list (*.txt)|*.txt";
+
+                if (dialog.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+                scraper = new ProxyScraper(dialog.FileName);
+            }
+                
+            else
+                scraper = new ProxyScraper();
 
             Console.ForegroundColor = ConsoleColor.Green;
 
@@ -84,17 +143,28 @@ namespace Youtube_Viewers
                         string ei;
                         string of;
                         string vm;
-                        int time = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
-
 
                         lock (locker)
                         {
-                            if (scraper.Time < time - 300) 
-                                scraper.Update();
-                            proxy = scraper.Proxies[random.Next(0, scraper.Proxies.Count - 1)];
+                            if (proxyType == 0 && scraper.Time < (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds - 300) 
+                                scraper.Scrape();
+                            proxy = scraper.Next();
                         }
 
-                        req.Proxy = proxy.Http;
+                        switch (proxyType)
+                        {
+                            case 0:
+                            case 1:
+                                req.Proxy = proxy.Http;
+                                break;
+                            case 2:
+                                req.Proxy = proxy.Socks4;
+                                break;
+                            case 3:
+                                req.Proxy = proxy.Socks5;
+                                break;
+                        }
+
                         req.UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Mobile/15E148 Safari/604.1";
 
                         res = req.Get($"https://m.youtube.com/watch?v={id}");
@@ -113,7 +183,7 @@ namespace Youtube_Viewers
                         req.AddHeader("Referrer", $"https://m.youtube.com/watch?v={id}");
 
                         req.Get(urlToGet);
-                        
+
                         lock (loglocker)
                         {
                             botted++;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,26 +16,53 @@ namespace Youtube_Viewers.Helpers
         };
 
         public int Time { get; private set; } = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
-        public static bool Scraping { get; private set; }
+        public string FileName { get; private set; }
 
         public List<Proxy> Proxies { get; private set; }
+        private Queue<Proxy> proxies;
 
         public ProxyScraper()
         {
             Scrape();
         }
-
-        public void Update()
+        public ProxyScraper(string fileName)
         {
-            if (Scraping)
-                return;
-            Scraping = true;
-
+            FileName = fileName;
             Scrape();
-            Scraping = false;
+        }
+
+        public Proxy Next()
+        {
+            if(proxies.Count == 0 && Proxies.Count != 0)
+            {
+                proxies = new Queue<Proxy>(Proxies);
+            }
+            return proxies.Dequeue();
         }
 
         public void Scrape()
+        {
+            if (Program.proxyType != 0)
+                fromFile();
+            else
+                fromUrls();
+
+            proxies = new Queue<Proxy>(Proxies);
+        }
+
+        private void fromFile()
+        {
+            List<string> proxies = new List<string>();
+
+            foreach (string proxy in File.ReadAllText(FileName).Trim().Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None))
+            {
+                proxies.Add(proxy.ToLower().Trim());
+            }
+
+            Proxies = Proxy.GetList(proxies);
+        }
+
+        private void fromUrls()
         {
             List<string> proxies = new List<string>();
 
@@ -59,7 +87,6 @@ namespace Youtube_Viewers.Helpers
 
             Proxies = Proxy.GetList(proxies);
             Time = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
-            
         }
     }
 }
