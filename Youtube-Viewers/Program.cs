@@ -24,6 +24,7 @@ namespace Youtube_Viewers
         static Object loglocker = new Object();
         static int botted = 0;
         static int errors = 0;
+        static int pos = 0;
         static bool holdViewers = true;
 
 
@@ -39,6 +40,8 @@ namespace Youtube_Viewers
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine(intro);
+
+            pos = Console.CursorTop;
 
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("Enter Video ID: ");
@@ -103,6 +106,8 @@ namespace Youtube_Viewers
                 scraper = new ProxyScraper();
 
             Console.ForegroundColor = ConsoleColor.Green;
+            Console.Clear();
+            Console.WriteLine(intro);
 
             List<Thread> threads = new List<Thread>();
 
@@ -118,8 +123,8 @@ namespace Youtube_Viewers
 
         static void log()
         {
-            Console.Clear();
-            Console.WriteLine(intro + $"\r\n\r\nBotted: {botted}\r\nErrors: {errors}\r\nProxies: {scraper.Proxies.Count}\r\nThreads: {threadsCount}");
+            Console.SetCursorPosition(0, pos);
+            Console.WriteLine($"\r\n\r\nBotted: {botted}\r\nErrors: {errors}\r\nProxies: {scraper.Proxies.Count}\r\nThreads: {threadsCount}\r\n");
         }
 
         static void worker(Object s)
@@ -191,7 +196,8 @@ namespace Youtube_Viewers
                 {
                     lock (locker)
                     {
-                        errors++;
+                        errors++; 
+                        log();
                     }
                     
                 }
