@@ -1,18 +1,18 @@
-﻿using System;
+using Leaf.xNet;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Leaf.xNet;
 
 namespace Youtube_Viewers.Helpers
 {
     class ProxyScraper
     {
-        public static string[] Urls { get; private set; } = new string[] { 
-            "https://api.proxyscrape.com/?request=getproxies&proxytype=http&timeout=10000&ssl=yes", 
-            "https://www.proxy-list.download/api/v1/get?type=https&anon=elite" 
+        public static string[] Urls { get; private set; } = new string[] {
+            "https://raw.githubusercontent.com/clarketm/proxy-list/master/proxy-list-raw.txt",
+            "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt",
+            "https://api.proxyscrape.com/?request=getproxies&proxytype=http&timeout=10000&ssl=yes",
+            "https://www.proxy-list.download/api/v1/get?type=https"
+            //"https://www.proxy-list.download/api/v1/get?type=https&anon=elite"
         };
 
         public int Time { get; private set; } = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
@@ -33,7 +33,7 @@ namespace Youtube_Viewers.Helpers
 
         public Proxy Next()
         {
-            if(proxies.Count == 0 && Proxies.Count != 0)
+            if (proxies.Count == 0 && Proxies.Count != 0)
             {
                 proxies = new Queue<Proxy>(Proxies);
             }
@@ -73,9 +73,9 @@ namespace Youtube_Viewers.Helpers
                     using (HttpRequest req = new HttpRequest())
                     {
                         string[] res = req.Get(url).ToString().Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
-                        foreach(string proxy in res)
+                        foreach (string proxy in res)
                         {
-                            if(proxies.IndexOf(proxy.Trim()) == -1)
+                            if (proxies.IndexOf(proxy.Trim()) == -1)
                             {
                                 proxies.Add(proxy);
                             }
