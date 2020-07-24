@@ -9,10 +9,9 @@ namespace Youtube_Viewers.Helpers
     {
         public static string[] Urls { get; private set; } = new string[] {
             "https://raw.githubusercontent.com/clarketm/proxy-list/master/proxy-list-raw.txt",
-            "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt",
-            "https://api.proxyscrape.com/?request=getproxies&proxytype=http&timeout=10000&ssl=yes",
-            "https://www.proxy-list.download/api/v1/get?type=https"
-            //"https://www.proxy-list.download/api/v1/get?type=https&anon=elite"
+            "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks4.txt",
+            "https://api.proxyscrape.com/?request=getproxies&proxytype=socks4&timeout=9000&ssl=yes",
+            "https://www.proxy-list.download/api/v1/get?type=socks4"
         };
 
         public int Time { get; private set; } = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;

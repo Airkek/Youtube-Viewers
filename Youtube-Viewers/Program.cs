@@ -72,7 +72,7 @@ namespace Youtube_Viewers
             {
                 Application.DoEvents();
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("Select proxy type:\r\n0. Public (Http/s autoscrape)\r\n1. Http/s\r\n2. Socks4\r\n3. Socks5");
+                Console.WriteLine("Select proxy type:\r\n0. Public (Socks4 autoscrape)\r\n1. Http/s\r\n2. Socks4\r\n3. Socks5");
                 Console.Write("Your choice: ");
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 ConsoleKey k = Console.ReadKey().Key;
@@ -171,11 +171,10 @@ namespace Youtube_Viewers
 
                         switch (proxyType)
                         {
-                            case 0:
-
                             case 1:
                                 req.Proxy = proxy.Http;
                                 break;
+                            case 0:
                             case 2:
                                 req.Proxy = proxy.Socks4;
                                 break;
@@ -184,9 +183,10 @@ namespace Youtube_Viewers
                                 break;
                         }
                         Random rand = new Random();
+
                         int indexy = rand.Next(iPhone_UserAgents.Length);
 
-                        req.UserAgent = iPhone_UserAgents[indexy].ToString(); //"Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Mobile/15E148 Safari/604.1";
+                        req.UserAgent = iPhone_UserAgents[indexy].ToString();
                         res = req.Get($"https://m.youtube.com/watch?v={id}?disable_polymer=1");
                         url = res.ToString().Split(new string[] { "videostatsWatchtimeUrl\\\":{\\\"baseUrl\\\":\\\"" }, StringSplitOptions.None)[1];
                         url = url.Split(new string[] { "\\\"}" }, StringSplitOptions.None)[0];
