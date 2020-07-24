@@ -124,7 +124,7 @@ namespace Youtube_Viewers
         static void log()
         {
             Console.SetCursorPosition(0, pos);
-            Console.WriteLine($"\r\n\r\nBotted: {botted}\r\nErrors: {errors}\r\nProxies: {scraper.Proxies.Count}\r\nThreads: {threadsCount}\r\n");
+            Console.WriteLine($"\r\nBotted: {botted}\r\nErrors: {errors}\r\nProxies: {scraper.Proxies.Count}\r\nThreads: {threadsCount}\r\n");
         }
 
         static void worker(Object s)
