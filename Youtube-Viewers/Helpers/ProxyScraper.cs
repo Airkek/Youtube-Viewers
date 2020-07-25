@@ -33,9 +33,8 @@ namespace Youtube_Viewers.Helpers
         public Proxy Next()
         {
             if (proxies.Count == 0 && Proxies.Count != 0)
-            {
                 proxies = new Queue<Proxy>(Proxies);
-            }
+
             return proxies.Dequeue();
         }
 
@@ -64,24 +63,19 @@ namespace Youtube_Viewers.Helpers
         private void fromUrls()
         {
             List<string> proxies = new List<string>();
-
-            foreach (string url in Urls)
+            using (HttpRequest req = new HttpRequest())
             {
-                try
+                foreach (string url in Urls)
                 {
-                    using (HttpRequest req = new HttpRequest())
+                    try
                     {
                         string[] res = req.Get(url).ToString().Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
                         foreach (string proxy in res)
-                        {
-                            if (proxies.IndexOf(proxy.Trim()) == -1)
-                            {
-                                proxies.Add(proxy);
-                            }
-                        }
+                            if (!proxies.Contains(proxy.Trim()))
+                                proxies.Add(proxy.Trim());
                     }
+                    catch { }
                 }
-                catch (Exception) { }
             }
 
             Proxies = Proxy.GetList(proxies);
