@@ -47,7 +47,7 @@ namespace Youtube_Viewers
     \::\ \      \::\ \    \::(_)  \ \    \:\_\ \ \      \::\ \ 
      \__\/       \__\/     \_______\/     \_____\/       \__\/ ";
 
-        //[STAThread]
+        [STAThread]
         static void Main(string[] args)
         {
             Application.DoEvents();
