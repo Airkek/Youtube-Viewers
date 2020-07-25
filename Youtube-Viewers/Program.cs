@@ -150,10 +150,13 @@ https://github.com/Airkek/Youtube-Viewers";
                         string ei;
                         string of;
                         string vm;
+
                         Application.DoEvents();
+
                         lock (locker)
-                            if (proxyType == 0 && scraper.Time < (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds - 150)
+                            if (proxyType == Public && scraper.Time < (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds - 150)
                                 scraper.Scrape();
+
                         proxy = scraper.Next();
 
                         switch (proxyType)
