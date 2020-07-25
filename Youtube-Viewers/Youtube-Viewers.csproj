@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Helpers\Proxy.cs" />
     <Compile Include="Helpers\ProxyScraper.cs" />
+    <Compile Include="Helpers\UsedProxyType.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

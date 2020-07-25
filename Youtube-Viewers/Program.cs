@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Forms;
 using Youtube_Viewers.Helpers;
+using static Youtube_Viewers.Helpers.UsedProxyType;
 using System.Threading.Tasks;
 
 namespace Youtube_Viewers
@@ -13,7 +14,7 @@ namespace Youtube_Viewers
         static string id;
         static int threadsCount;
         static ProxyScraper scraper;
-        public static int proxyType = 0;
+        public static UsedProxyType proxyType;
         static Random random = new Random();
         static Object locker = new Object();
         static Object loglocker = new Object();
@@ -72,40 +73,33 @@ https://github.com/Airkek/Youtube-Viewers";
             while (true)
             {
                 Application.DoEvents();
+
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("Select proxy type:\r\n0. Public (Socks4 autoscrape)\r\n1. Http/s\r\n2. Socks4\r\n3. Socks5");
+
                 Console.Write("Your choice: ");
                 Console.ForegroundColor = ConsoleColor.Cyan;
-                ConsoleKey k = Console.ReadKey().Key;
+
+                char k = Console.ReadKey().KeyChar;
+
+                try
+                {
+                    proxyType = (UsedProxyType)int.Parse(k.ToString());
+                }
+                catch
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Unknown proxy type");
+                    continue;
+                }
+
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine();
-                if (k == ConsoleKey.D0)
-                {
-                    Console.WriteLine("Selected public proxy");
-                    proxyType = 0;
-                    break;
-                }
-                if (k == ConsoleKey.D1)
-                {
-                    Console.WriteLine("Selected Http/s type of proxy");
-                    proxyType = 1;
-                    break;
-                }
-                else if (k == ConsoleKey.D2)
-                {
-                    Console.WriteLine("Selected Socks4 type of proxy");
-                    proxyType = 2;
-                    break;
-                }
-                else if (k == ConsoleKey.D3)
-                {
-                    Console.WriteLine("Selected Socks5 type of proxy");
-                    proxyType = 3;
-                    break;
-                }
+                Console.WriteLine($"\r\nSelected {proxyType} proxy");
+
+                break;
             }
 
-            if (proxyType != 0)
+            if (proxyType != Public)
             {
                 Console.WriteLine("Open file with proxy list");
 
@@ -172,14 +166,14 @@ https://github.com/Airkek/Youtube-Viewers";
 
                         switch (proxyType)
                         {
-                            case 1:
+                            case Https:
                                 req.Proxy = proxy.Http;
                                 break;
-                            case 0:
-                            case 2:
+                            case Public:
+                            case Socks4:
                                 req.Proxy = proxy.Socks4;
                                 break;
-                            case 3:
+                            case Socks5:
                                 req.Proxy = proxy.Socks5;
                                 break;
                         }
