@@ -152,21 +152,21 @@ https://github.com/Airkek/Youtube-Viewers";
                         string vm;
                         Application.DoEvents();
                         lock (locker)
-                        {
                             if (proxyType == 0 && scraper.Time < (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds - 150)
                                 scraper.Scrape();
-                            proxy = scraper.Next();
-                        }
+                        proxy = scraper.Next();
 
                         switch (proxyType)
                         {
                             case Https:
                                 req.Proxy = proxy.Http;
                                 break;
+
                             case Public:
                             case Socks4:
                                 req.Proxy = proxy.Socks4;
                                 break;
+
                             case Socks5:
                                 req.Proxy = proxy.Socks5;
                                 break;
@@ -204,7 +204,7 @@ https://github.com/Airkek/Youtube-Viewers";
                 }
                 catch (Exception)
                 {
-                    lock (locker)
+                    lock (loglocker)
                     {
                         Application.DoEvents();
                         errors++;
