@@ -45,7 +45,8 @@ namespace Youtube_Viewers
  \:\_\ \ \    \::\ \    \::(_)  \/_    \:\ \ \ \      \::\ \   
   \::::_\/     \::\ \    \::  _  \ \    \:\ \ \ \      \::\ \  
     \::\ \      \::\ \    \::(_)  \ \    \:\_\ \ \      \::\ \ 
-     \__\/       \__\/     \_______\/     \_____\/       \__\/ ";
+     \__\/       \__\/     \_______\/     \_____\/       \__\/ 
+https://github.com/Airkek/Youtube-Viewers";
 
         [STAThread]
         static void Main(string[] args)
