@@ -13,33 +13,17 @@ namespace Youtube_Viewers
     {
         static string id;
         static int threadsCount;
+
+        static int pos = 0;
+
         static ProxyScraper scraper;
         public static UsedProxyType proxyType;
-        static Random random = new Random();
-        static Object locker = new Object();
-        static Object loglocker = new Object();
+        
         static int botted = 0;
         static int errors = 0;
-        static int pos = 0;
-        static bool holdViewers = true;
 
-        public static string[] iPhone_UserAgents =
-        {
-            "Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
-            "Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Mobile/15E148 Safari/604.1",
-            "Mozilla/5.0 (iPhone; CPU iPhone OS 12_1_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/16D57",
-            "Mozilla/5.0 (iPhone; CPU iPhone OS 13_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Mobile/15E148 Safari/604.1",
-            "Mozilla/5.0 (iPhone; CPU iPhone OS 13_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Mobile/15E148 Safari/604.1",
-            "Mozilla/5.0 (iPhone; CPU iPhone OS 12_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
-            "Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko)",
-            "Mozilla/5.0 (iPhone; CPU iPhone OS 13_1_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.1 Mobile/15E148 Safari/604.1",
-            "Mozilla/5.0 (iPhone; CPU iPhone OS 13_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1 Mobile/15E148 Safari/604.1",
-            "Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.2 Mobile/15E148 Safari/604.1",
-            "Mozilla/5.0 (iPhone; CPU iPhone OS 12_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Mobile/15E148 Safari/604.1",
-            "Mozilla/5.0 (iPhone; CPU iPhone OS 11_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.0 Mobile/15E148 Safari/604.1",
-            "Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1",
-            "Mozilla/5.0 (iPhone; CPU iPhone OS 12_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1"
-        };
+        static Object locker = new Object();
+        static Object loglocker = new Object();
 
         static string intro = @"/_/\/_/\   /________/\ /_______/\     /_____/\     /________/\ 
 \ \ \ \ \  \__.::.__\/ \::: _  \ \    \:::_ \ \    \__.::.__\/ 
@@ -47,6 +31,7 @@ namespace Youtube_Viewers
   \::::_\/     \::\ \    \::  _  \ \    \:\ \ \ \      \::\ \  
     \::\ \      \::\ \    \::(_)  \ \    \:\_\ \ \      \::\ \ 
      \__\/       \__\/     \_______\/     \_____\/       \__\/ 
+
 https://github.com/Airkek/Youtube-Viewers";
 
         [STAThread]
@@ -58,7 +43,16 @@ https://github.com/Airkek/Youtube-Viewers";
 
             pos = Console.CursorTop;
             ThreadPool.GetMaxThreads(out int workerThreadsCount, out int ioThreadsCount);
-            Console.Write("Max Worker Threads: " + workerThreadsCount.ToString() + "\n" + "Max Thread Count: " + ioThreadsCount.ToString() + "\n");
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("Max Worker Threads: ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(workerThreadsCount);
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("Max Thread Count: ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(ioThreadsCount);
 
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("Enter Video ID: ");
@@ -177,11 +171,8 @@ https://github.com/Airkek/Youtube-Viewers";
                                 req.Proxy = proxy.Socks5;
                                 break;
                         }
-                        Random rand = new Random();
 
-                        int indexy = rand.Next(iPhone_UserAgents.Length);
-
-                        req.UserAgent = iPhone_UserAgents[indexy].ToString();
+                        req.UserAgent = UserAgent.Get();
                         res = req.Get($"https://m.youtube.com/watch?v={id}?disable_polymer=1");
                         url = res.ToString().Split(new string[] { "videostatsWatchtimeUrl\\\":{\\\"baseUrl\\\":\\\"" }, StringSplitOptions.None)[1];
                         url = url.Split(new string[] { "\\\"}" }, StringSplitOptions.None)[0];
