@@ -31,31 +31,32 @@ namespace Youtube_Viewers
   \::::_\/     \::\ \    \::  _  \ \    \:\ \ \ \      \::\ \  
     \::\ \      \::\ \    \::(_)  \ \    \:\_\ \ \      \::\ \ 
      \__\/       \__\/     \_______\/     \_____\/       \__\/ 
+";
 
-https://github.com/Airkek/Youtube-Viewers";
+        static string gitRepo = "https://github.com/Airkek/Youtube-Viewers";
 
         [STAThread]
         static void Main(string[] args)
         {
             Application.DoEvents();
 
-            Console.Title = "YTBot | https://github.com/Airkek/Youtube-Viewers";
+            Console.Title = $"YTBot | {gitRepo}";
 
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine(intro);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("GitHub: ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(gitRepo);
 
             pos = Console.CursorTop;
-            ThreadPool.GetMaxThreads(out int workerThreadsCount, out int ioThreadsCount);
-
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write("Max Worker Threads: ");
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine(workerThreadsCount);
+            ThreadPool.GetMaxThreads(out int _uselessStuff, out int ioThreadsCount);
 
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("Max Thread Count: ");
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine(ioThreadsCount);
+            Console.WriteLine();
 
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("Enter Video ID: ");
@@ -86,7 +87,7 @@ https://github.com/Airkek/Youtube-Viewers";
                 catch
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Unknown proxy type");
+                    Console.WriteLine("\r\nUnknown proxy type");
                     continue;
                 }
 
