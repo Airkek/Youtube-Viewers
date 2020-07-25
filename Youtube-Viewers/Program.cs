@@ -38,6 +38,9 @@ https://github.com/Airkek/Youtube-Viewers";
         static void Main(string[] args)
         {
             Application.DoEvents();
+
+            Console.Title = "YTBot | https://github.com/Airkek/Youtube-Viewers";
+
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine(intro);
 
