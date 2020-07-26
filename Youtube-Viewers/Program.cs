@@ -17,7 +17,8 @@ namespace Youtube_Viewers
         static int pos = 0;
 
         static ProxyScraper scraper;
-        public static UsedProxyType proxyType;
+        static UsedProxyType proxyType;
+        static Random random = new Random();
         
         static int botted = 0;
         static int errors = 0;
@@ -159,6 +160,8 @@ namespace Youtube_Viewers
                         string of;
                         string vm;
 
+                        double vol = random.Next(200, 1000) / 10d;
+
                         Application.DoEvents();
 
                         lock (locker)
@@ -194,7 +197,7 @@ namespace Youtube_Viewers
                         of = url.Split(new string[] { "of=" }, StringSplitOptions.None)[1].Split('&')[0];
                         vm = url.Split(new string[] { "vm=" }, StringSplitOptions.None)[1].Split('&')[0];
 
-                        urlToGet = $"https://s.youtube.com/api/stats/watchtime?ns=yt&el=detailpage&cpn=isWmmj2C9Y2vULKF&docid={id}&ver=2&cmt=7334&ei={ei}&fmt=133&fs=0&rt=1003&of={of}&euri&lact=4418&live=dvr&cl={cl}&state=playing&vm={vm}&volume=98.5&c=MWEB&cver=2.20200313.03.00&cplayer=UNIPLAYER&cbrand=apple&cbr=Safari%20Mobile&cbrver=12.1.15E148&cmodel=iphone&cos=iPhone&cosver=12_2&cplatform=MOBILE&delay=5&hl=ru&cr=GB&rtn=1303&afmt=140&lio=1556394045.182&idpj=&ldpj=&rti=1003&muted=0&st=7334&et=7634";
+                        urlToGet = $"https://s.youtube.com/api/stats/watchtime?ns=yt&el=detailpage&cpn=isWmmj2C9Y2vULKF&docid={id}&ver=2&cmt=7334&ei={ei}&fmt=133&fs=0&rt=1003&of={of}&euri&lact=4418&live=dvr&cl={cl}&state=playing&vm={vm}&volume={vol}&c=MWEB&cver=2.20200313.03.00&cplayer=UNIPLAYER&cbrand=apple&cbr=Safari%20Mobile&cbrver=12.1.15E148&cmodel=iphone&cos=iPhone&cosver=12_2&cplatform=MOBILE&delay=5&hl=ru&cr=GB&rtn=1303&afmt=140&lio=1556394045.182&idpj=&ldpj=&rti=1003&muted=0&st=7334&et=7634";
 
                         req.AddHeader("Referrer", $"https://m.youtube.com/watch?v={id}");
                         req.AddHeader("Host", "m.youtube.com");
