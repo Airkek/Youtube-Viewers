@@ -12,7 +12,7 @@ Then _s0m3-t3xt_ would be the ID of the video.
 This tool based on [KevinLage](https://github.com/KevinLage)'s tool (Python)
 https://github.com/KevinLage/YouTube-Livestream-Botter
 
-## I was deleted my commits bcs I am stupid mfkr
+## I was deleted all commits bcs I am stupid mfkr
 ### Some of these commits (last on 19 June 2020):
 c88e59d25fcf6e8bd05bf85a6727a5618c5835a6 (HEAD -> master) dl link <br />
 1dd6ae97161f3bfe16a7857dcbb6249270efdf35 (tag: v1.2) change Console.Clear() to Console.SetCursorPosition() <br />
