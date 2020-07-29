@@ -53,12 +53,9 @@ namespace Youtube_Viewers.Helpers
 
         private void fromFile()
         {
-            List<string> proxies = new List<string>();
+            string res = File.ReadAllText(FileName);
 
-            foreach (string proxy in File.ReadAllText(FileName).Trim().Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None))
-            {
-                proxies.Add(proxy.ToLower().Trim());
-            }
+            List<string> proxies = GetProxies(res);
 
             Proxies = Proxy.GetList(proxies);
         }
@@ -73,9 +70,7 @@ namespace Youtube_Viewers.Helpers
                     try
                     {
                         string res = req.Get(url).ToString();
-                        foreach (Match proxy in Proxy_re.Matches(res))
-                            if (!proxies.Contains(proxy.Value))
-                                proxies.Add(proxy.Value);
+                        GetProxies(res).ForEach(proxies.Add);
                     }
                     catch { }
                 }
@@ -83,6 +78,21 @@ namespace Youtube_Viewers.Helpers
 
             Proxies = Proxy.GetList(proxies);
             Time = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+        }
+
+        private List<string> GetProxies(string str) 
+        {
+            List<string> res = new List<string>();
+        	try
+        	{
+        		foreach(Match proxy in Proxy_re.Matches(str))
+        		    if(!res.Contains(proxy.Value))
+        		        res.Add(proxy.Value);
+        	}
+        	catch 
+        	{ 
+        	    return res;
+        	}
         }
     }
 }
