@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions; //RegEx
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,10 +17,14 @@ namespace Youtube_Viewers.Helpers
 
         public Proxy(string proxy)
         {
+            bool Match = Regex.IsMatch(proxy.Trim(), string.Join(string.Empty, "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$:\\d{2,5}"));
+            if (Match == true)
+            {
             Address = proxy.Trim();
             Http = HttpProxyClient.Parse(Address);
             Socks4 = Socks4ProxyClient.Parse(Address);
             Socks5 = Socks5ProxyClient.Parse(Address);
+            }
         }
 
         public static List<Proxy> GetList(List<string> list)
