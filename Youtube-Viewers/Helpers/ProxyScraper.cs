@@ -2,6 +2,7 @@ using Leaf.xNet;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Youtube_Viewers.Helpers
 {
@@ -14,6 +15,8 @@ namespace Youtube_Viewers.Helpers
             "https://www.proxy-list.download/api/v1/get?type=socks4"
         };
 
+        public static Regex Proxy_re { get; private set; } = new Regex(@"\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?):[0-9]{1,5}\b", RegexOptions.Compiled);
+        
         public int Time { get; private set; } = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
         public string FileName { get; private set; }
 
@@ -69,10 +72,10 @@ namespace Youtube_Viewers.Helpers
                 {
                     try
                     {
-                        string[] res = req.Get(url).ToString().Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
-                        foreach (string proxy in res)
-                            if (!proxies.Contains(proxy.Trim()))
-                                proxies.Add(proxy.Trim());
+                        string res = req.Get(url).ToString();
+                        foreach (Match proxy in Proxy_re.Matches(res))
+                            if (!proxies.Contains(proxy.Value))
+                                proxies.Add(proxy.Value);
                     }
                     catch { }
                 }

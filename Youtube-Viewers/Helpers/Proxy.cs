@@ -27,13 +27,11 @@ namespace Youtube_Viewers.Helpers
             List<Proxy> proxies = new List<Proxy>();
             foreach(string proxy in list)
             {
-                if (proxy.Split(':').Length != 2 || proxy.Split(':')[0].Split('.').Length != 4)
-                    continue;
                 try
                 {
                     proxies.Add(new Proxy(proxy));
                 }
-                catch (Exception) { }
+                catch { }
             }
 
             return proxies;
