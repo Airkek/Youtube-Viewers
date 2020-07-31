@@ -89,10 +89,8 @@ namespace Youtube_Viewers.Helpers
         		    if(!res.Contains(proxy.Value))
         		        res.Add(proxy.Value);
         	}
-        	catch 
-        	{ 
-        	    return res;
-        	}
+        	catch { }
+        	return res;
         }
     }
 }
