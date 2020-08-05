@@ -17,7 +17,7 @@ namespace Youtube_Viewers
         static int pos = 0;
 
         static ProxyScraper scraper;
-        static UsedProxyType proxyType;
+        public static UsedProxyType proxyType;
         static Random random = new Random();
         
         static int botted = 0;
