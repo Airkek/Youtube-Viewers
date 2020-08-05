@@ -1,5 +1,5 @@
 # Download for Windows
-https://github.com/Airkek/Youtube-Viewers/releases/download/v1.3.2/Release.zip
+https://github.com/Airkek/Youtube-Viewers/releases/download/v1.4/Release.zip
 
 ![Screenshot](https://i.imgur.com/ifpcVvB.png)
 
