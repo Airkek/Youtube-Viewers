@@ -12,7 +12,7 @@ namespace Youtube_Viewers
 {
     class Program
     {
-        static string id;
+        static string vidUrl;
         static int threadsCount;
 
         static int pos = 0;
@@ -58,7 +58,7 @@ namespace Youtube_Viewers
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("Enter Video ID: ");
             Console.ForegroundColor = ConsoleColor.Cyan;
-            id = Console.ReadLine().Trim();
+            vidUrl = "https://m.youtube.com/watch?v=" + Console.ReadLine().Trim();
 
             logo(ConsoleColor.Cyan);
 
@@ -194,12 +194,12 @@ namespace Youtube_Viewers
 
                         req.UserAgent = UserAgent.Get();
 
-                        res = req.Get($"https://m.youtube.com/watch?v={id}");
+                        res = req.Get(vidUrl);
                         url = url_re.Match(res.ToString()).Groups[1].Value;
 
                         urlToGet = url.Replace(@"\\u0026", "&").Replace("%2C", ",").Replace(@"\/", "/");
 
-                        req.AddHeader("Referrer", $"https://m.youtube.com/watch?v={id}");
+                        req.AddHeader("Referrer", vidUrl);
                         req.AddHeader("Host", "m.youtube.com");
                         req.AddHeader("Proxy-Connection", "keep-alive");
                         req.AddHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
