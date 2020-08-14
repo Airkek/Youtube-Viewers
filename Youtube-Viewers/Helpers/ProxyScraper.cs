@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using static Youtube_Viewers.Helpers.UsedProxyType;
 
 namespace Youtube_Viewers.Helpers
 {
@@ -22,6 +23,7 @@ namespace Youtube_Viewers.Helpers
 
         public List<Proxy> Proxies { get; private set; }
         private Queue<Proxy> proxies;
+        private Object locker = new Object();
 
         public ProxyScraper()
         {
@@ -35,6 +37,10 @@ namespace Youtube_Viewers.Helpers
 
         public Proxy Next()
         {
+            lock (locker)
+                if (Program.proxyType == Public && Time < (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds - 150)
+                    Scrape();
+
             if (proxies.Count == 0 && Proxies.Count != 0)
                 proxies = new Queue<Proxy>(Proxies);
 

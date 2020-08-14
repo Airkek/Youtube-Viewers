@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using Youtube_Viewers.Helpers;
 using static Youtube_Viewers.Helpers.UsedProxyType;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace Youtube_Viewers
 {
@@ -36,21 +37,19 @@ namespace Youtube_Viewers
 
         static string gitRepo = "https://github.com/Airkek/Youtube-Viewers";
 
+        static Regex url_re = new Regex(@"videostatsWatchtimeUrl\\"":{\\""baseUrl\\"":\\""(.+?)\\""}", RegexOptions.Compiled);
+        static Regex cl_re = new Regex(@"cl=(.+?)&", RegexOptions.Compiled);
+        static Regex ei_re = new Regex(@"ei=(.+?)&", RegexOptions.Compiled);
+        static Regex of_re = new Regex(@"of=(.+?)&", RegexOptions.Compiled);
+        static Regex vm_re = new Regex(@"vm=(.+?)&", RegexOptions.Compiled);
+
         [STAThread]
         static void Main(string[] args)
         {
-            Application.DoEvents();
-
             Console.Title = $"YTBot | {gitRepo}";
 
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine(intro);
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write("GitHub: ");
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine(gitRepo);
+            logo(ConsoleColor.Cyan);
 
-            pos = Console.CursorTop;
             ThreadPool.GetMaxThreads(out int _uselessStuff, out int ioThreadsCount);
 
             Console.ForegroundColor = ConsoleColor.White;
@@ -59,11 +58,15 @@ namespace Youtube_Viewers
             Console.WriteLine(ioThreadsCount);
             Console.WriteLine();
 
+            logo(ConsoleColor.Cyan);
+
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("Enter Video ID: ");
             Console.ForegroundColor = ConsoleColor.Cyan;
             id = Console.ReadLine().Trim();
-         
+
+            logo(ConsoleColor.Cyan);
+
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("Enter Threads Count: ");
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -71,7 +74,7 @@ namespace Youtube_Viewers
 
             while (true)
             {
-                Application.DoEvents();
+                logo(ConsoleColor.Cyan);
 
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("Select proxy type:\r\n0. Public (Socks4 autoscrape)\r\n1. Http/s\r\n2. Socks4\r\n3. Socks5");
@@ -83,12 +86,15 @@ namespace Youtube_Viewers
 
                 try
                 {
-                    proxyType = (UsedProxyType)int.Parse(k.ToString());
+                    int key = int.Parse(k.ToString());
+
+                    if (key < 0 || key > 3)
+                        throw new NotImplementedException();
+
+                    proxyType = (UsedProxyType)key;
                 }
                 catch
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\r\nUnknown proxy type");
                     continue;
                 }
 
@@ -114,14 +120,8 @@ namespace Youtube_Viewers
 
             else
                 scraper = new ProxyScraper();
-            Application.DoEvents();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Clear();
-            Console.WriteLine(intro);
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write("GitHub: ");
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(gitRepo);
+
+            logo(ConsoleColor.Green);
 
             List<Thread> threads = new List<Thread>();
 
@@ -131,15 +131,32 @@ namespace Youtube_Viewers
                 t.Start();
                 threads.Add(t);
             }
-            Application.DoEvents();
             Console.ReadKey();
+        }
+
+        static void logo(ConsoleColor color)
+        {
+            Console.Clear();
+
+            Console.ForegroundColor = color;
+            Console.WriteLine(intro);
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("GitHub: ");
+
+            Console.ForegroundColor = color;
+            Console.WriteLine(gitRepo);
+
+            pos = Console.CursorTop;
         }
 
         static void log()
         {
-            Application.DoEvents();
-            Console.SetCursorPosition(0, pos);
-            Console.WriteLine($"\r\nBotted: {botted}\r\nErrors: {errors}\r\nProxies: {scraper.Proxies.Count}\r\nThreads: {threadsCount}\r\n");
+            lock (locker)
+            {
+                Console.SetCursorPosition(0, pos);
+                Console.WriteLine($"\r\nBotted: {botted}\r\nErrors: {errors}\r\nProxies: {scraper.Proxies.Count}\r\nThreads: {threadsCount}\r\n");
+            }
         }
 
         static void worker(Object s)
@@ -162,12 +179,6 @@ namespace Youtube_Viewers
 
                         double vol = random.Next(200, 1000) / 10d;
 
-                        Application.DoEvents();
-
-                        lock (locker)
-                            if (proxyType == Public && scraper.Time < (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds - 150)
-                                scraper.Scrape();
-
                         proxy = scraper.Next();
 
                         switch (proxyType)
@@ -187,15 +198,15 @@ namespace Youtube_Viewers
                         }
 
                         req.UserAgent = UserAgent.Get();
+
                         res = req.Get($"https://m.youtube.com/watch?v={id}?disable_polymer=1");
-                        url = res.ToString().Split(new string[] { "videostatsWatchtimeUrl\\\":{\\\"baseUrl\\\":\\\"" }, StringSplitOptions.None)[1];
-                        url = url.Split(new string[] { "\\\"}" }, StringSplitOptions.None)[0];
+                        url = url_re.Match(res.ToString()).Groups[1].Value;
                         url = url.Replace(@"\\u0026", "&").Replace("%2C", ",").Replace(@"\/", "/");
 
-                        cl = url.Split(new string[] { "cl=" }, StringSplitOptions.None)[1].Split('&')[0];
-                        ei = url.Split(new string[] { "ei=" }, StringSplitOptions.None)[1].Split('&')[0];
-                        of = url.Split(new string[] { "of=" }, StringSplitOptions.None)[1].Split('&')[0];
-                        vm = url.Split(new string[] { "vm=" }, StringSplitOptions.None)[1].Split('&')[0];
+                        cl = cl_re.Match(url).Groups[1].Value;
+                        ei = ei_re.Match(url).Groups[1].Value;
+                        of = of_re.Match(url).Groups[1].Value;
+                        vm = vm_re.Match(url).Groups[1].Value;
 
                         urlToGet = $"https://s.youtube.com/api/stats/watchtime?ns=yt&el=detailpage&cpn=isWmmj2C9Y2vULKF&docid={id}&ver=2&cmt=7334&ei={ei}&fmt=133&fs=0&rt=1003&of={of}&euri&lact=4418&live=dvr&cl={cl}&state=playing&vm={vm}&volume={vol}&c=MWEB&cver=2.20200313.03.00&cplayer=UNIPLAYER&cbrand=apple&cbr=Safari%20Mobile&cbrver=12.1.15E148&cmodel=iphone&cos=iPhone&cosver=12_2&cplatform=MOBILE&delay=5&hl=ru&cr=GB&rtn=1303&afmt=140&lio=1556394045.182&idpj=&ldpj=&rti=1003&muted=0&st=7334&et=7634";
 
@@ -208,23 +219,14 @@ namespace Youtube_Viewers
 
                         req.Get(urlToGet);
 
-                        lock (loglocker)
-                        {
-                            Application.DoEvents();
-                            botted++;
-                            log();
-                        }
-                    }
-                }
-                catch (Exception)
-                {
-                    lock (loglocker)
-                    {
-                        Application.DoEvents();
-                        errors++;
+                        Interlocked.Increment(ref botted);
                         log();
                     }
-
+                }
+                catch
+                {
+                    Interlocked.Increment(ref errors);
+                    log();
                 }
             }
         }
