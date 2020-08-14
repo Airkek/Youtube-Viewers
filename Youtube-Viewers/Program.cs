@@ -12,7 +12,7 @@ namespace Youtube_Viewers
 {
     class Program
     {
-        static string vidUrl;
+        static string id;
         static int threadsCount;
 
         static int pos = 0;
@@ -25,6 +25,7 @@ namespace Youtube_Viewers
         static int errors = 0;
 
         static Object locker = new Object();
+        static Object loglocker = new Object();
 
         static string intro = @"/_/\/_/\   /________/\ /_______/\     /_____/\     /________/\ 
 \ \ \ \ \  \__.::.__\/ \::: _  \ \    \:::_ \ \    \__.::.__\/ 
@@ -37,6 +38,10 @@ namespace Youtube_Viewers
         static string gitRepo = "https://github.com/Airkek/Youtube-Viewers";
 
         static Regex url_re = new Regex(@"videostatsWatchtimeUrl\\"":{\\""baseUrl\\"":\\""(.+?)\\""}", RegexOptions.Compiled);
+        static Regex cl_re = new Regex(@"cl=(.+?)&", RegexOptions.Compiled);
+        static Regex ei_re = new Regex(@"ei=(.+?)&", RegexOptions.Compiled);
+        static Regex of_re = new Regex(@"of=(.+?)&", RegexOptions.Compiled);
+        static Regex vm_re = new Regex(@"vm=(.+?)&", RegexOptions.Compiled);
 
         [STAThread]
         static void Main(string[] args)
@@ -58,7 +63,7 @@ namespace Youtube_Viewers
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("Enter Video ID: ");
             Console.ForegroundColor = ConsoleColor.Cyan;
-            vidUrl = "https://m.youtube.com/watch?v=" + Console.ReadLine().Trim();
+            id = Console.ReadLine().Trim();
 
             logo(ConsoleColor.Cyan);
 
@@ -194,12 +199,24 @@ namespace Youtube_Viewers
 
                         req.UserAgent = UserAgent.Get();
 
-                        res = req.Get(vidUrl);
+                        res = req.Get($"https://m.youtube.com/watch?v={id}");
+
                         url = url_re.Match(res.ToString()).Groups[1].Value;
+                        url = url.Replace(@"\\u0026", "&").Replace("%2C", ",").Replace(@"\/", "/");
 
-                        urlToGet = url.Replace(@"\\u0026", "&").Replace("%2C", ",").Replace(@"\/", "/");
+                        cl = cl_re.Match(url).Groups[1].Value;
+                        ei = ei_re.Match(url).Groups[1].Value;
+                        of = of_re.Match(url).Groups[1].Value;
+                        vm = vm_re.Match(url).Groups[1].Value;
 
-                        req.AddHeader("Referrer", vidUrl);
+                        cl = url.Split(new string[] { "cl=" }, StringSplitOptions.None)[1].Split('&')[0];
+                        ei = url.Split(new string[] { "ei=" }, StringSplitOptions.None)[1].Split('&')[0];
+                        of = url.Split(new string[] { "of=" }, StringSplitOptions.None)[1].Split('&')[0];
+                        vm = url.Split(new string[] { "vm=" }, StringSplitOptions.None)[1].Split('&')[0];
+
+                        urlToGet = $"https://s.youtube.com/api/stats/watchtime?ns=yt&el=detailpage&cpn=isWmmj2C9Y2vULKF&docid={id}&ver=2&cmt=7334&ei={ei}&fmt=133&fs=0&rt=1003&of={of}&euri&lact=4418&live=dvr&cl={cl}&state=playing&vm={vm}&volume={vol}&c=MWEB&cver=2.20200313.03.00&cplayer=UNIPLAYER&cbrand=apple&cbr=Safari%20Mobile&cbrver=12.1.15E148&cmodel=iphone&cos=iPhone&cosver=12_2&cplatform=MOBILE&delay=5&hl=ru&cr=GB&rtn=1303&afmt=140&lio=1556394045.182&idpj=&ldpj=&rti=1003&muted=0&st=7334&et=7634";
+
+                        req.AddHeader("Referrer", $"https://m.youtube.com/watch?v={id}");
                         req.AddHeader("Host", "m.youtube.com");
                         req.AddHeader("Proxy-Connection", "keep-alive");
                         req.AddHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
