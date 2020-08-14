@@ -25,7 +25,6 @@ namespace Youtube_Viewers
         static int errors = 0;
 
         static Object locker = new Object();
-        static Object loglocker = new Object();
 
         static string intro = @"/_/\/_/\   /________/\ /_______/\     /_____/\     /________/\ 
 \ \ \ \ \  \__.::.__\/ \::: _  \ \    \:::_ \ \    \__.::.__\/ 
@@ -38,10 +37,6 @@ namespace Youtube_Viewers
         static string gitRepo = "https://github.com/Airkek/Youtube-Viewers";
 
         static Regex url_re = new Regex(@"videostatsWatchtimeUrl\\"":{\\""baseUrl\\"":\\""(.+?)\\""}", RegexOptions.Compiled);
-        static Regex cl_re = new Regex(@"cl=(.+?)&", RegexOptions.Compiled);
-        static Regex ei_re = new Regex(@"ei=(.+?)&", RegexOptions.Compiled);
-        static Regex of_re = new Regex(@"of=(.+?)&", RegexOptions.Compiled);
-        static Regex vm_re = new Regex(@"vm=(.+?)&", RegexOptions.Compiled);
 
         [STAThread]
         static void Main(string[] args)
@@ -199,16 +194,10 @@ namespace Youtube_Viewers
 
                         req.UserAgent = UserAgent.Get();
 
-                        res = req.Get($"https://m.youtube.com/watch?v={id}?disable_polymer=1");
+                        res = req.Get($"https://m.youtube.com/watch?v={id}");
                         url = url_re.Match(res.ToString()).Groups[1].Value;
-                        url = url.Replace(@"\\u0026", "&").Replace("%2C", ",").Replace(@"\/", "/");
 
-                        cl = cl_re.Match(url).Groups[1].Value;
-                        ei = ei_re.Match(url).Groups[1].Value;
-                        of = of_re.Match(url).Groups[1].Value;
-                        vm = vm_re.Match(url).Groups[1].Value;
-
-                        urlToGet = $"https://s.youtube.com/api/stats/watchtime?ns=yt&el=detailpage&cpn=isWmmj2C9Y2vULKF&docid={id}&ver=2&cmt=7334&ei={ei}&fmt=133&fs=0&rt=1003&of={of}&euri&lact=4418&live=dvr&cl={cl}&state=playing&vm={vm}&volume={vol}&c=MWEB&cver=2.20200313.03.00&cplayer=UNIPLAYER&cbrand=apple&cbr=Safari%20Mobile&cbrver=12.1.15E148&cmodel=iphone&cos=iPhone&cosver=12_2&cplatform=MOBILE&delay=5&hl=ru&cr=GB&rtn=1303&afmt=140&lio=1556394045.182&idpj=&ldpj=&rti=1003&muted=0&st=7334&et=7634";
+                        urlToGet = url.Replace(@"\\u0026", "&").Replace("%2C", ",").Replace(@"\/", "/");
 
                         req.AddHeader("Referrer", $"https://m.youtube.com/watch?v={id}");
                         req.AddHeader("Host", "m.youtube.com");
