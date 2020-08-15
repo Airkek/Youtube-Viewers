@@ -12,7 +12,8 @@ namespace Youtube_Viewers.Helpers
         public static string[] Urls { get; private set; } = new string[] {
             "https://raw.githubusercontent.com/clarketm/proxy-list/master/proxy-list-raw.txt",
             "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks4.txt",
-            "https://api.proxyscrape.com/?request=getproxies&proxytype=socks4&timeout=9000&ssl=yes",
+            "https://api.proxyscrape.com/?request=getproxies&proxytype=socks4&timeout=10000&country=all",
+            "https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/socks4.txt"
             "https://www.proxy-list.download/api/v1/get?type=socks4"
         };
 
