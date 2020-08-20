@@ -23,8 +23,7 @@ namespace Youtube_Viewers
         static int botted = 0;
         static int errors = 0;
 
-        static Object locker = new Object();
-        static Object loglocker = new Object();
+        static object locker = new object();
 
         static string intro = @"/_/\/_/\   /________/\ /_______/\     /_____/\     /________/\ 
 \ \ \ \ \  \__.::.__\/ \::: _  \ \    \:::_ \ \    \__.::.__\/ 
