@@ -5,7 +5,6 @@ using System.Threading;
 using System.Windows.Forms;
 using Youtube_Viewers.Helpers;
 using static Youtube_Viewers.Helpers.UsedProxyType;
-using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 
 namespace Youtube_Viewers
