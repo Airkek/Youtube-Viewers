@@ -2,7 +2,6 @@ using Leaf.xNet;
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Windows.Forms;
 using Youtube_Viewers.Helpers;
 using static Youtube_Viewers.Helpers.UsedProxyType;
 using System.Text.RegularExpressions;
@@ -104,16 +103,8 @@ namespace Youtube_Viewers
 
             if (proxyType != Public)
             {
-                Console.WriteLine("Open file with proxy list");
-
-                OpenFileDialog dialog = new OpenFileDialog();
-                dialog.Filter = "Proxy list (*.txt)|*.txt";
-
-                if (dialog.ShowDialog() != DialogResult.OK)
-                {
-                    return;
-                }
-                scraper = new ProxyScraper(dialog.FileName);
+                Console.Write("Path to proxy list");
+                scraper = new ProxyScraper(Console.ReadLine().Trim());
             }
 
             else
