@@ -23,7 +23,7 @@ namespace Youtube_Viewers.Helpers
 
         public List<Proxy> Proxies { get; private set; }
         private Queue<Proxy> proxies;
-        private Object locker = new Object();
+        private readonly Object locker = new Object();
 
         public ProxyScraper()
         {
@@ -50,14 +50,14 @@ namespace Youtube_Viewers.Helpers
         public void Scrape()
         {
             if (Program.proxyType != 0)
-                fromFile();
+                FromFile();
             else
-                fromUrls();
+                FromUrls();
 
             proxies = new Queue<Proxy>(Proxies);
         }
 
-        private void fromFile()
+        private void FromFile()
         {
             string res = File.ReadAllText(FileName);
 
@@ -66,7 +66,7 @@ namespace Youtube_Viewers.Helpers
             Proxies = Proxy.GetList(proxies);
         }
 
-        private void fromUrls()
+        private void FromUrls()
         {
             List<string> proxies = new List<string>();
             using (HttpRequest req = new HttpRequest())
