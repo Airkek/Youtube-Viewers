@@ -1,5 +1,5 @@
 # Download for Windows
-dotnet Framework 4.7.2 (recommended for Windows): https://github.com/Airkek/Youtube-Viewers/releases/download/v1.4/Release.zip
+dotnet Framework 4.7.2 (recommended for Windows): https://github.com/Airkek/Youtube-Viewers/releases/download/v1.4/Release.zip <br />
 dotnet Core 3.1: https://github.com/Airkek/Youtube-Viewers/releases/download/v2.0/Release.zip
 
 # Download for Linux
