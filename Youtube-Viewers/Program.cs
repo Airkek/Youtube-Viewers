@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using Leaf.xNet;
 using Youtube_Viewers.Helpers;
 using static Youtube_Viewers.Helpers.UsedProxyType;
+using System.Windows.Forms;
 
 namespace Youtube_Viewers
 {
@@ -33,12 +34,6 @@ namespace Youtube_Viewers
 ";
 
         static string gitRepo = "https://github.com/Airkek/Youtube-Viewers";
-
-        static Regex url_re = new Regex(@"videostatsWatchtimeUrl\\"":{\\""baseUrl\\"":\\""(.+?)\\""}", RegexOptions.Compiled);
-        static Regex cl_re = new Regex(@"cl=(.+?)&", RegexOptions.Compiled);
-        static Regex ei_re = new Regex(@"ei=(.+?)&", RegexOptions.Compiled);
-        static Regex of_re = new Regex(@"of=(.+?)&", RegexOptions.Compiled);
-        static Regex vm_re = new Regex(@"vm=(.+?)&", RegexOptions.Compiled);
 
         [STAThread]
         static void Main(string[] args)
@@ -104,7 +99,12 @@ namespace Youtube_Viewers
             if (proxyType != Public)
             {
                 Console.Write("Path to proxy list");
-                scraper = new ProxyScraper(Console.ReadLine().Trim());
+
+                OpenFileDialog ofd = new OpenFileDialog();
+                ofd.Filter = "Proxy list|*.txt";
+                ofd.ShowDialog();
+
+                scraper = new ProxyScraper(ofd.FileName);
             }
 
             else
