@@ -1,8 +1,8 @@
-using Leaf.xNet;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using Leaf.xNet;
 using static Youtube_Viewers.Helpers.UsedProxyType;
 
 namespace Youtube_Viewers.Helpers
@@ -75,10 +75,16 @@ namespace Youtube_Viewers.Helpers
                 {
                     try
                     {
-                        string res = req.Get(url).ToString();
-                        GetProxies(res).ForEach(proxies.Add);
+                        HttpResponse res = req.Get(url);
+                        GetProxies(res.ToString()).ForEach(proxies.Add);
                     }
-                    catch { }
+                    catch (Exception e)
+                    {
+                        ConsoleColor temp = Console.ForegroundColor;
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"{url} - Proxy scraping error: {e.Message}");
+                        Console.ForegroundColor = temp;
+                    }
                 }
             }
 

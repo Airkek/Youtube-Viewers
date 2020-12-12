@@ -1,6 +1,3 @@
-# Not working since dec 9
-Will be fixed next week
-
 ![Screenshot](https://i.imgur.com/ifpcVvB.png)
 
 # Whats the ID of a Livestream?
