@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Text.RegularExpressions;
 using Leaf.xNet;
 using Youtube_Viewers.Helpers;
 using static Youtube_Viewers.Helpers.UsedProxyType;
@@ -18,8 +17,7 @@ namespace Youtube_Viewers
 
         static ProxyScraper scraper;
         public static UsedProxyType proxyType;
-        static Random random = new Random();
-        
+
         static int botted = 0;
         static int errors = 0;
 
@@ -154,6 +152,8 @@ namespace Youtube_Viewers
 
         static void Worker(Object s)
         {
+            Random random = new Random();
+
             while (true)
             {
                 try
@@ -169,9 +169,13 @@ namespace Youtube_Viewers
                         string of;
                         string vm;
 
-                        double vol = random.Next(200, 1000) / 10d;
+                        int st;
+                        int et;
+                        int rt;
+                        int lact;
+                        int rti;
+                        int rtn;
 
-                        
                         proxy = scraper.Next();
 
                         switch (proxyType)
@@ -191,21 +195,36 @@ namespace Youtube_Viewers
 
                         req.UserAgentRandomize();
 
-                        res = req.Get($"https://youtube.com/watch?v={id}");
+                        res = req.Get($"https://www.youtube.com/watch?v={id}");
 
                         url = res.ToString().Split(new[] { "videostatsWatchtimeUrl\":{\"baseUrl\":\"" }, StringSplitOptions.None)[1].Split('"')[0];
 
                         url = url.Replace(@"\u0026", "&").Replace("%2C", ",").Replace(@"\/", "/");
-
+                        
                         cl = url.Split(new string[] { "cl=" }, StringSplitOptions.None)[1].Split('&')[0];
                         ei = url.Split(new string[] { "ei=" }, StringSplitOptions.None)[1].Split('&')[0];
                         of = url.Split(new string[] { "of=" }, StringSplitOptions.None)[1].Split('&')[0];
                         vm = url.Split(new string[] { "vm=" }, StringSplitOptions.None)[1].Split('&')[0];
 
-                        urlToGet = $"https://s.youtube.com/api/stats/watchtime?ns=yt&el=detailpage&cpn=isWmmj2C9Y2vULKF&docid={id}&ver=2&cmt=7334&ei={ei}&fmt=133&fs=0&rt=1003&of={of}&euri&lact=4418&live=dvr&cl={cl}&state=playing&vm={vm}&volume={vol}&c=MWEB&cver=2.20200313.03.00&cplayer=UNIPLAYER&cbrand=apple&cbr=Safari%20Mobile&cbrver=12.1.15E148&cmodel=iphone&cos=iPhone&cosver=12_2&cplatform=MOBILE&delay=5&hl=ru&cr=GB&rtn=1303&afmt=140&lio=1556394045.182&idpj=&ldpj=&rti=1003&muted=0&st=7334&et=7634";
+                        byte[] buffer = new byte[100];
 
-                        req.AddHeader("Referrer", $"https://m.youtube.com/watch?v={id}");
-                        req.AddHeader("Host", "m.youtube.com");
+                        random.NextBytes(buffer);
+
+                        string cpn = Convert.ToBase64String(buffer).Replace("=", "").Replace("/", "").Replace("+", "").Substring(0, 16);
+
+                        st = random.Next(1000, 10000);
+                        et = st + random.Next(200, 700);
+
+                        rt = random.Next(10, 200);
+
+                        lact = random.Next(1000, 8000);
+                        rti = rt;
+                        rtn = rt + 300;
+
+                        urlToGet = "https://" + $"s.youtube.com/api/stats/watchtime?ns=yt&el=detailpage&cpn={cpn}&docid={id}&ver=2&cmt={et}&ei={ei}&fmt=243&fs=0&rt={rt}&of={of}&euri&lact={lact}&live=dvr&cl={cl}&state=playing&vm={vm}&volume=100&cbr=Firefox&cbrver=83.0&c=WEB&cplayer=UNIPLAYER&cver=2.20201210.01.00&cos=Windows&cosver=10.0&cplatform=DESKTOP&delay=5&hl=ru_RU&cr=RU&rtn={rtn}&afmt=140&lio=1556394045.182&idpj=-5&ldpj=-8&rti={rti}&muted=0&st={st}&et={et}";
+
+                        req.AddHeader("Referrer", $"https://www.youtube.com/watch?v={id}");
+                        req.AddHeader("Host", "www.youtube.com");
                         req.AddHeader("Proxy-Connection", "keep-alive");
                         req.AddHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
                         req.AddHeader("Accept-Language", "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7");
@@ -214,6 +233,8 @@ namespace Youtube_Viewers
                         res = req.Get(urlToGet);
                         Interlocked.Increment(ref botted);
                         Log();
+
+                        Thread.Sleep(10000);
                     }
                 }
                 catch
