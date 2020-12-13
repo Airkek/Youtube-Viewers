@@ -9,5 +9,8 @@ Then _s0m3-t3xt_ would be the ID of the video.
 This tool based on [KevinLage](https://github.com/KevinLage)'s tool (Python)
 https://github.com/KevinLage/YouTube-Livestream-Botter
 
-# Donate
+# Support
 If u want to support my work - https://www.donationalerts.com/r/airkek <3
+
+# Supporters <3
+- [Tran Mai Anh](https://github.com/tranmaianh75)
