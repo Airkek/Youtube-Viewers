@@ -10,4 +10,4 @@ This tool based on [KevinLage](https://github.com/KevinLage)'s tool (Python)
 https://github.com/KevinLage/YouTube-Livestream-Botter
 
 # Donate
-If u want to support my work - https://new.donatepay.ru/@airkekgithub <3
+If u want to support my work - https://www.donationalerts.com/r/airkek <3
