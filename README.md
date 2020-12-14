@@ -1,4 +1,4 @@
-[![]Codefactor(https://www.codefactor.io/repository/github/Airkek/Youtube-Viewers/badge?style=plastic)] [![Support](https://img.shields.io/badge/Donate-%3C3-ff69b4)](https://www.donationalerts.com/r/airkek)
+[![]Codefactor(https://www.codefactor.io/repository/github/Airkek/Youtube-Viewers/badge?style=plastic)]() [![Support](https://img.shields.io/badge/Donate-%3C3-ff69b4)](https://www.donationalerts.com/r/airkek)
 
 ![Screenshot](https://i.imgur.com/ifpcVvB.png)
 
