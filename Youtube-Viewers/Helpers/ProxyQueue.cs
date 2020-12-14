@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace GenshinBrute
+namespace Youtube_Viewers.Helpers
 {
     class ProxyQueue
     {
