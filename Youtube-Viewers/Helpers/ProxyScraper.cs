@@ -9,12 +9,6 @@ namespace Youtube_Viewers.Helpers
 {
     class ProxyScraper
     {
-        public static string[] Urls { get; private set; } = new string[] {
-            "https://raw.githubusercontent.com/clarketm/proxy-list/master/proxy-list-raw.txt",
-            "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks4.txt",
-            "https://api.proxyscrape.com/?request=getproxies&proxytype=socks4&timeout=9000&ssl=yes",
-            "https://www.proxy-list.download/api/v1/get?type=socks4"
-        };
 
         public static Regex Proxy_re { get; private set; } = new Regex(@"\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?):[0-9]{1,5}\b", RegexOptions.Compiled);
         
@@ -71,7 +65,7 @@ namespace Youtube_Viewers.Helpers
             List<string> proxies = new List<string>();
             using (HttpRequest req = new HttpRequest())
             {
-                foreach (string url in Urls)
+                foreach (string url in Program.Urls)
                 {
                     try
                     {
