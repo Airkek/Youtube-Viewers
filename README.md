@@ -1,4 +1,4 @@
-[![Support](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.donationalerts.com/r/airkek)
+[![Support](https://img.shields.io/badge/Donate-%3C3-ff69b4)](https://www.donationalerts.com/r/airkek)
 
 ![Screenshot](https://i.imgur.com/ifpcVvB.png)
 
