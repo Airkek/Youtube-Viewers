@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Threading;
 using Leaf.xNet;
 using Youtube_Viewers.Helpers;
-using static Youtube_Viewers.Helpers.UsedProxyType;
 using System.Windows.Forms;
+using System.IO;
+using System.Diagnostics;
 
 namespace Youtube_Viewers
 {
@@ -15,16 +16,15 @@ namespace Youtube_Viewers
 
         static int pos = 0;
 
-        static ProxyScraper scraper;
-        public static UsedProxyType proxyType;
+        static ProxyQueue scraper;
+        static ProxyType proxyType;
+        static bool updateProxy = false;
 
         static int botted = 0;
         static int errors = 0;
 
         static string viewers = "Parsing...";
         static string title = "Parsing...";
-
-        static object locker = new object();
 
         public static string[] Urls = new[] {
             "https://raw.githubusercontent.com/clarketm/proxy-list/master/proxy-list-raw.txt",
@@ -46,6 +46,11 @@ namespace Youtube_Viewers
         [STAThread]
         static void Main(string[] args)
         {
+            if (!File.Exists("proxy_url.txt"))
+            {
+                File.AppendAllText("proxy_url.txt", string.Join("\r\n", Urls));
+            }
+
             Console.Title = $"YTBot | {gitRepo}";
             Logo(ConsoleColor.Cyan);
 
@@ -57,7 +62,7 @@ namespace Youtube_Viewers
                 Logo(ConsoleColor.Cyan);
 
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("Select proxy type:\r\n0. Public (Socks4 autoscrape)\r\n1. Http/s\r\n2. Socks4\r\n3. Socks5");
+                Console.WriteLine("Select proxy type:\r\n1. Http/s\r\n2. Socks4\r\n3. Socks5");
 
                 Console.Write("Your choice: ");
                 Console.ForegroundColor = ConsoleColor.Cyan;
@@ -67,11 +72,20 @@ namespace Youtube_Viewers
                 try
                 {
                     int key = int.Parse(k.ToString());
-
-                    if (key < 0 || key > 3)
-                        throw new NotImplementedException();
-
-                    proxyType = (UsedProxyType)key;
+                    switch (key)
+                    {
+                        case 1:
+                            proxyType = ProxyType.HTTP;
+                            break;
+                        case 2:
+                            proxyType = ProxyType.Socks4;
+                            break;
+                        case 3:
+                            proxyType = ProxyType.Socks5;
+                            break;
+                        default:
+                            throw new Exception();
+                    }
                 }
                 catch
                 {
@@ -84,19 +98,73 @@ namespace Youtube_Viewers
                 break;
             }
 
-            if (proxyType != Public)
+            while (true)
             {
-                Console.Write("Path to proxy list");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("Update proxies by urls?:\r\n1. Yes\r\n2. No");
 
-                OpenFileDialog ofd = new OpenFileDialog();
-                ofd.Filter = "Proxy list|*.txt";
-                ofd.ShowDialog();
+                Console.Write("Your choice: ");
 
-                scraper = new ProxyScraper(ofd.FileName);
+                char k = Console.ReadKey().KeyChar;
+
+                try
+                {
+                    int pt = int.Parse(k.ToString());
+                    switch (pt)
+                    {
+                        case 1:
+                            updateProxy = true;
+                            break;
+
+                        case 2:
+                            break;
+
+                        default:
+                            throw new Exception();
+                    }
+                }
+                catch
+                {
+                    continue;
+                }
+                break;
             }
 
+            if (updateProxy)
+            {
+                Urls = File.ReadAllText("proxy_url.txt").Trim().Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+                Console.WriteLine("Proxy links: \r\n" + string.Join("\r\n", Urls));
+                Console.WriteLine("You can set your own links in 'proxy_url.txt' file");
+
+                string totalProxies = String.Empty;
+
+                foreach(string proxyUrl in Urls)
+                {
+                    Console.WriteLine($"Downloading proxies from '{proxyUrl}'");
+                    using (HttpRequest req = new HttpRequest())
+                    {
+                        totalProxies += req.Get(proxyUrl).ToString() + "\r\n";
+                    }
+                }
+
+                scraper = new ProxyQueue(totalProxies, proxyType);
+            }
             else
-                scraper = new ProxyScraper();
+            {
+                Console.WriteLine("Select proxy list");
+
+                OpenFileDialog dialog = new OpenFileDialog();
+                dialog.Filter = "Proxy list (*.txt)|*.txt";
+
+                if (dialog.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                scraper = new ProxyQueue(File.ReadAllText(dialog.FileName), proxyType);
+            }
+
+            Console.WriteLine($"Loaded {scraper.Length} proxies");
 
             Logo(ConsoleColor.Green);
 
@@ -106,6 +174,13 @@ namespace Youtube_Viewers
             logWorker.Start();
             threads.Add(logWorker);
 
+            if (updateProxy)
+            {
+                Thread proxyWorker = new Thread(proxyUpdater);
+                proxyWorker.Start();
+                threads.Add(proxyWorker);
+            }
+            
             for (int i = 0; i < threadsCount; i++)
             {
                 Thread t = new Thread(Worker);
@@ -131,6 +206,36 @@ namespace Youtube_Viewers
             return val;
         }
 
+        private static void proxyUpdater()
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            int sec = 600;
+            while (true)
+            {
+                if (stopwatch.ElapsedMilliseconds / 1000 >= sec)
+                {
+                    string proxies = String.Empty;
+                    foreach(string proxyUrl in Urls)
+                    {
+                        using (HttpRequest req = new HttpRequest())
+                        {
+                            try
+                            {
+                                proxies += req.Get(proxyUrl).ToString() + "\r\n";
+                            }
+                            catch
+                            {
+                            }
+                        }
+                    }
+
+                    scraper.SafeUpdate(proxies);
+                    sec += 600;
+                }
+            }
+        }
+
         static void Logo(ConsoleColor color)
         {
             Console.Clear();
@@ -152,7 +257,7 @@ namespace Youtube_Viewers
             while (true)
             {
                 Console.SetCursorPosition(0, pos);
-                Console.WriteLine($"\r\nBotted: {botted}\r\nErrors: {errors}\r\nProxies: {scraper.Proxies.Count}\r\nThreads: {threadsCount}\r\nTitle: {title}          \r\nViewers: {viewers}          \r\n");
+                Console.WriteLine($"\r\nBotted: {botted}\r\nErrors: {errors}\r\nProxies: {scraper.Length}          \r\nThreads: {threadsCount}\r\nTitle: {title}          \r\nViewers: {viewers}          \r\n");
                 Thread.Sleep(250);
             }
         }
@@ -175,27 +280,13 @@ namespace Youtube_Viewers
             {
                 try
                 {
-                    using (HttpRequest req = new HttpRequest())
+                    using (HttpRequest req = new HttpRequest()
+                    {
+                        Proxy = scraper.Next()
+                    })
                     {
                         HttpResponse res;
-                        Proxy proxy;
 
-                        proxy = scraper.Next();
-
-                        switch (proxyType)
-                        {
-                            case Https:
-                                req.Proxy = proxy.Http;
-                                break;
-                            case Public:
-                            case Socks4:
-                                req.Proxy = proxy.Socks4;
-                                break;
-                            case Socks5:
-                                req.Proxy = proxy.Socks5;
-                                break;
-                        }
-                        
                         req.UserAgentRandomize();
 
                         res = req.Get($"https://www.youtube.com/watch?v={id}");

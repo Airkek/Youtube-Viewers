@@ -18,6 +18,7 @@ namespace Youtube_Viewers.Helpers
 
         object locker = new object();
 
+        public int Count => proxies.Count;
         public int Length => plist.Length;
 
         public ProxyType Type { get; private set; }
