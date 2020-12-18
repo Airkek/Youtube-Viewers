@@ -354,12 +354,9 @@ namespace Youtube_Viewers
                         args["cosver"] = "10.0";
                         args["cplatform"] = "DESKTOP";
                         args["delay"] = "5";
-                        args["hl"] = "ru_RU";
+                        args["hl"] = "en_US";
                         args["rtn"] = rtn.ToString();
                         args["aftm"] = "140";
-                        args["lio"] = "1556394045.182";
-                        args["idpj"] = "-5";
-                        args["ldpj"] = "-8";
                         args["rti"] = rt.ToString();
                         args["muted"] = "0";
                         args["st"] = st.ToString();
