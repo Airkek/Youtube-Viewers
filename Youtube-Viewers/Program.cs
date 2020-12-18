@@ -159,7 +159,7 @@ namespace Youtube_Viewers
 
         static string buildUrl(Dictionary<string, string> args)
         {
-            string url = "https://s.youtube.com/api/stats/watchtime?";
+            string url = "https://www.youtube.com/api/stats/watchtime?";
             foreach(KeyValuePair<string, string> arg in args)
             {
                 url += $"{arg.Key}={arg.Value}&";
@@ -226,13 +226,6 @@ namespace Youtube_Viewers
 
                         string cpn = Convert.ToBase64String(buffer).Replace("=", "").Replace("/", "").Replace("+", "").Substring(0, 16);
 
-                        int st = random.Next(1000, 10000);
-                        int et = st + random.Next(200, 700);
-
-                        int rt = random.Next(10, 200);
-
-                        int lact = random.Next(1000, 8000);
-                        int rtn = rt + 300;
 
                         Dictionary<string, string> args = new Dictionary<string, string>();
 
@@ -241,46 +234,36 @@ namespace Youtube_Viewers
                         args["cpn"] = cpn.ToString();
                         args["docid"] = id;
                         args["ver"] = "2";
-                        args["cmt"] = et.ToString();
                         args["ei"] = ei;
-                        args["fmt"] = "243";
+                        args["fmt"] = "136";
                         args["fs"] = "0";
-                        args["rt"] = rt.ToString();
+                        args["rt"] = "2";
                         args["of"] = of;
                         args["euri"] = "";
-                        args["lact"] = lact.ToString();
                         args["live"] = "dvr";
                         args["cl"] = cl;
                         args["state"] = "playing";
                         args["vm"] = vm;
                         args["volume"] = "100";
-                        args["cbr"] = "Firefox"; //TODO: parse from header
-                        args["cbrver"] = "83.0"; // ^
+                        args["cbr"] = "Chrome"; //TODO: parse from header
+                        args["cbrver"] = "86.0.4240.75"; // ^
                         args["c"] = "WEB";
+                        args["cver"] = "2.20201216.08.00";
                         args["cplayer"] = "UNIPLAYER";
-                        args["cver"] = "2.20201210.01.00";
                         args["cos"] = "Windows";
                         args["cosver"] = "10.0";
-                        args["cplatform"] = "DESKTOP";
                         args["delay"] = "5";
-                        args["hl"] = "ru_RU";
-                        args["rtn"] = rtn.ToString();
-                        args["aftm"] = "140";
-                        args["lio"] = "1556394045.182";
-                        args["idpj"] = "-5";
-                        args["ldpj"] = "-8";
-                        args["rti"] = rt.ToString();
+                        args["hl"] = "en_US";
+                        args["cr"] = "US";
+                        args["rtn"] = "500";
+                        args["rti"] = "2";
                         args["muted"] = "0";
-                        args["st"] = st.ToString();
-                        args["et"] = et.ToString();
 
                         string urlToGet = buildUrl(args);
 
                         req.AddHeader("Referrer", $"https://www.youtube.com/watch?v={id}");
                         req.AddHeader("Host", "www.youtube.com");
                         req.AddHeader("Proxy-Connection", "keep-alive");
-                        req.AddHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-                        req.AddHeader("Accept-Language", "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7");
                         req.AddHeader("Accept-Encoding", "gzip, deflate");
 
                         res = req.Get(urlToGet);
