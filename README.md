@@ -1,6 +1,6 @@
 ![Codefactor](https://www.codefactor.io/repository/github/Airkek/Youtube-Viewers/badge?style=flat-square) [![Support](https://img.shields.io/badge/Donate-%3C3-ff69b4)](https://github.com/Airkek/Youtube-Viewers/blob/master/Donate.md)
 
-![Screenshot](https://i.imgur.com/aJDTvby.png)
+![Screenshot](https://i.imgur.com/gPJpYb3.png)
 
 # Whats the ID of a Livestream?
 
