@@ -4,7 +4,7 @@
 Download Release.zip from [Latest Release page](https://github.com/Airkek/Youtube-Viewers/releases/latest)
 
 # Whats the ID of a Livestream?
-YouTube URLs look something like this: https://www.youtube.com/watch?v=_s0m3-t3xt_&ab_channel=asfasdfasd <br />
+YouTube URLs look something like this: https://www.youtube.com/watch?v=s0m3-t3xt&ab_channel=asfasdfasd <br />
 Then _s0m3-t3xt_ would be the ID of the video.
 
 # Proxies
