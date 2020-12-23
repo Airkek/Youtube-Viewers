@@ -44,7 +44,7 @@ namespace Youtube_Viewers.Helpers
             {
                 string line = lineStock.Trim();
                 string[] lineSplit = line.Split(':');
-                if (lineSplit.Length == 2 || lineSplit.Length == 4)
+                if (lineSplit.Length >= 2 || lineSplit.Length <= 4)
                 {
                     string formatted = String.Empty;
 
