@@ -60,7 +60,7 @@ namespace Youtube_Viewers.Helpers
                     {
                         if (lineSplit[0].Contains(".") && lineSplit[0].Split('.').Length == 4)
                             formatted = $"{Type.ToString().ToLower()}://{line}";
-                        else if (lineSplit[2].Contains(".") && lineSplit[0].Split('.').Length == 4)
+                        else if (lineSplit.Length == 4 && lineSplit[2].Contains(".") && lineSplit[0].Split('.').Length == 4)
                             formatted = $"{Type.ToString().ToLower()}://{lineSplit[2]}:{lineSplit[3]}:{lineSplit[0]}:{lineSplit[1]}";
                     }
 

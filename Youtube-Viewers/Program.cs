@@ -235,6 +235,7 @@ namespace Youtube_Viewers
                     scraper.SafeUpdate(proxies);
                     sec += 600;
                 }
+                Thread.Sleep(1000);
             }
         }
 
@@ -375,6 +376,8 @@ namespace Youtube_Viewers
                 {
                     Interlocked.Increment(ref errors);
                 }
+
+                Thread.Sleep(1);
             }
         }
     }
