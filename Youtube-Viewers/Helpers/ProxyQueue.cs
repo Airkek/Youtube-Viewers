@@ -54,14 +54,14 @@ namespace Youtube_Viewers.Helpers
                         string userPass = lineSplit[0];
                         string address = lineSplit[1];
 
-                        formatted = $"{Type}://{address}:{userPass}";
+                        formatted = $"{Type.ToString().ToLower()}://{address}:{userPass}";
                     }
                     else
                     {
                         if (lineSplit[0].Contains("."))
-                            formatted = $"{Type}://{line}";
+                            formatted = $"{Type.ToString().ToLower()}://{line}";
                         else if (lineSplit[2].Contains("."))
-                            formatted = $"{Type}://{lineSplit[2]}:{lineSplit[3]}:{lineSplit[0]}:{lineSplit[1]}";
+                            formatted = $"{Type.ToString().ToLower()}://{lineSplit[2]}:{lineSplit[3]}:{lineSplit[0]}:{lineSplit[1]}";
                     }
 
                     if (!string.IsNullOrEmpty(formatted))
@@ -102,7 +102,7 @@ namespace Youtube_Viewers.Helpers
 
             ProxyClient res;
 
-            if (proxies.TryDequeue(out res))
+            if (proxies.TryDequeue(out res) && res != null)
                 return res;
             else
                 throw new HttpException();
