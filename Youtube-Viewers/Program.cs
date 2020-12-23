@@ -292,8 +292,8 @@ namespace Youtube_Viewers
                         req.UserAgentRandomize();
 
                         res = req.Get($"https://www.youtube.com/watch?v={id}");
-                        string sres = res.ToString();
 
+                        string sres = res.ToString();
                         string viewersTemp = string.Join("", RegularExpressions.Viewers.Match(sres).Groups[1].Value.Where(c => char.IsDigit(c)));
 
                         if (!string.IsNullOrEmpty(viewersTemp))
