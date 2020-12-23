@@ -58,7 +58,10 @@ namespace Youtube_Viewers.Helpers
                     }
                     else
                     {
-                        formatted = $"{Type}://{line}";
+                        if (lineSplit[0].Contains("."))
+                            formatted = $"{Type}://{line}";
+                        else if (lineSplit[2].Contains("."))
+                            formatted = $"{Type}://{lineSplit[2]}:{lineSplit[3]}:{lineSplit[0]}:{lineSplit[1]}";
                     }
 
                     if (!string.IsNullOrEmpty(formatted))
