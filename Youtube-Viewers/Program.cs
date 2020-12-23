@@ -289,15 +289,16 @@ namespace Youtube_Viewers
                     {
                         HttpResponse res;
                         
-                        
                         req.UserAgentRandomize();
 
                         res = req.Get($"https://www.youtube.com/watch?v={id}");
-                        string sres = res.ToString();
 
+                        string sres = res.ToString();
                         string viewersTemp = string.Join("", RegularExpressions.Viewers.Match(sres).Groups[1].Value.Where(c => char.IsDigit(c)));
+
                         if (!string.IsNullOrEmpty(viewersTemp))
                             viewers = viewersTemp;
+
                         title = RegularExpressions.Title.Match(sres).Groups[1].Value;
 
                         string url = RegularExpressions.ViewUrl.Match(sres).Groups[1].Value;

@@ -1,6 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using Leaf.xNet;
 
 namespace Youtube_Viewers.Helpers
@@ -9,8 +9,6 @@ namespace Youtube_Viewers.Helpers
     {
         ConcurrentQueue<ProxyClient> proxies;
         ProxyClient[] plist;
-
-        static Regex Proxy_re = new Regex(@"\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?):[0-9]{1,5}\b", RegexOptions.Compiled);
 
         object locker = new object();
 
@@ -23,12 +21,12 @@ namespace Youtube_Viewers.Helpers
         {
             HashSet<string> res = new HashSet<string>();
             
-            foreach (Match proxy in Proxy_re.Matches(str))
+            foreach (string proxy in MatchAndFormatProxies(str))
             {
                 try
                 {
-                    if (!res.Contains(proxy.Value))
-                        res.Add(proxy.Value);
+                    if (!res.Contains(proxy))
+                        res.Add(proxy);
                 }
                 catch { }
             }
@@ -36,12 +34,50 @@ namespace Youtube_Viewers.Helpers
             return new List<string>(res);
         }
 
+        private List<string> MatchAndFormatProxies(string str)
+        {
+            List<string> res = new List<string>();
+
+            string[] list = str.Split(new[] { "\n", "\r\n" }, StringSplitOptions.None);
+
+            foreach (string lineStock in list)
+            {
+                string line = lineStock.Trim();
+                string[] lineSplit = line.Split(':');
+                if (lineSplit.Length >= 2 || lineSplit.Length <= 4)
+                {
+                    string formatted = String.Empty;
+
+                    if (line.Contains("@"))
+                    {
+                        lineSplit = line.Split('@');
+                        string userPass = lineSplit[0];
+                        string address = lineSplit[1];
+
+                        formatted = $"{Type.ToString().ToLower()}://{address}:{userPass}";
+                    }
+                    else
+                    {
+                        if (lineSplit[0].Contains(".") && lineSplit[0].Split('.').Length == 4)
+                            formatted = $"{Type.ToString().ToLower()}://{line}";
+                        else if (lineSplit[2].Contains(".") && lineSplit[0].Split('.').Length == 4)
+                            formatted = $"{Type.ToString().ToLower()}://{lineSplit[2]}:{lineSplit[3]}:{lineSplit[0]}:{lineSplit[1]}";
+                    }
+
+                    if (!string.IsNullOrEmpty(formatted))
+                        res.Add(formatted);
+                }
+            }
+
+            return res;
+        }
+
         public void SafeUpdate(string pr)
         {
             lock (locker)
             {
                 List<ProxyClient> prxs = new List<ProxyClient>();
-                GetProxies(pr).ForEach(x => prxs.Add(ProxyClient.Parse(Type, x)));
+                GetProxies(pr).ForEach(x => prxs.Add(ProxyClient.Parse(x)));
                 plist = prxs.ToArray();
             }
         }
@@ -66,10 +102,10 @@ namespace Youtube_Viewers.Helpers
 
             ProxyClient res;
 
-            if (proxies.TryDequeue(out res))
+            if (proxies.TryDequeue(out res) && res != null)
                 return res;
             else
-                return Next();
+                throw new HttpException();
         }
     }
 }
