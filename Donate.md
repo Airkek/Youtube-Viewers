@@ -1,6 +1,6 @@
 # Thank you!
 ## PayPal
-https://paypal.me/airkek
+https://paypal.me/airgit
 
 ## Qiwi
 https://qiwi.com/n/keijia
