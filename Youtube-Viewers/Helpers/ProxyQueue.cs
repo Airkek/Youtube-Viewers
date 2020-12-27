@@ -43,33 +43,65 @@ namespace Youtube_Viewers.Helpers
             foreach (string lineStock in list)
             {
                 string line = lineStock.Trim();
-                string[] lineSplit = line.Split(':');
-                if (lineSplit.Length >= 2 || lineSplit.Length <= 4)
+                
+                try
                 {
-                    string formatted = String.Empty;
-
-                    if (line.Contains("@"))
-                    {
-                        lineSplit = line.Split('@');
-                        string userPass = lineSplit[0];
-                        string address = lineSplit[1];
-
-                        formatted = $"{Type.ToString().ToLower()}://{address}:{userPass}";
-                    }
-                    else
-                    {
-                        if (lineSplit[0].Contains(".") && lineSplit[0].Split('.').Length == 4)
-                            formatted = $"{Type.ToString().ToLower()}://{line}";
-                        else if (lineSplit.Length == 4 && lineSplit[2].Contains(".") && lineSplit[0].Split('.').Length == 4)
-                            formatted = $"{Type.ToString().ToLower()}://{lineSplit[2]}:{lineSplit[3]}:{lineSplit[0]}:{lineSplit[1]}";
-                    }
-
+                    string formatted = FormatLine(line);
                     if (!string.IsNullOrEmpty(formatted))
                         res.Add(formatted);
                 }
+                catch { }                    
             }
 
             return res;
+        }
+
+        private string FormatLine(string line)
+        {
+            string[] lineSplit = line.Split(':');
+            if (lineSplit.Length < 2 || lineSplit.Length > 4)
+            {
+                return String.Empty;
+            }
+
+            string formatted = String.Empty;
+
+            if (line.Contains("@") && lineSplit.Length == 3)
+            {
+                lineSplit = line.Split('@');
+                string userPass = lineSplit[0];
+                string address = lineSplit[1];
+
+                int port = int.Parse(address.Split(':')[1]);
+
+                if (port > 65535 || port < 1)
+                    return String.Empty;
+
+                formatted = $"{Type.ToString().ToLower()}://{address}:{userPass}";
+            }
+            else
+            {
+                if (lineSplit[0].Contains(".") && lineSplit[0].Split('.').Length == 4)
+                {
+                    int port = int.Parse(lineSplit[1]);
+
+                    if (port > 65535 || port < 1)
+                        return String.Empty;
+
+                    formatted = $"{Type.ToString().ToLower()}://{line}";
+                }
+                else if (lineSplit.Length == 4 && lineSplit[2].Contains(".") && lineSplit[0].Split('.').Length == 4)
+                {
+                    int port = int.Parse(lineSplit[3]);
+
+                    if (port > 65535 || port < 1)
+                        return String.Empty;
+
+                    formatted = $"{Type.ToString().ToLower()}://{lineSplit[2]}:{lineSplit[3]}:{lineSplit[0]}:{lineSplit[1]}";
+                }
+            }
+
+            return formatted;
         }
 
         public void SafeUpdate(string pr)
