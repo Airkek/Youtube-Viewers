@@ -2,6 +2,9 @@
 ## PayPal
 https://paypal.me/airkek
 
+## Qiwi
+https://qiwi.com/n/keijia
+
 ## BTC
 `3CFhqMPvTFavnTMLpnhVS7wPV7jvc3JgBV`
 
