@@ -1,6 +1,6 @@
 # Thank you!
-## Donation Alerts (PayPal, Qiwi, YooMoney etc.)
-https://www.donationalerts.com/r/airkek
+## PayPal
+https://paypal.me/airkek
 
 ## BTC
 `3CFhqMPvTFavnTMLpnhVS7wPV7jvc3JgBV`
