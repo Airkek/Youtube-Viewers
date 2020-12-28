@@ -8,7 +8,7 @@ YouTube URLs look something like this: https://www.youtube.com/watch?v=s0m3-t3xt
 Then _s0m3-t3xt_ would be the ID of the video.
 
 # Proxies
-You can use any types of proxies including auth proxies (`user:pass@ip:port` and `ip:port:user:pass`) <br />
+You can use any types of IPv4 proxies including auth proxies (`user:pass@ip:port` and `ip:port:user:pass`) <br />
 
 ![Screenshot](https://i.imgur.com/gPJpYb3.png)
 
