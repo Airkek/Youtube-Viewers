@@ -225,7 +225,7 @@ namespace Youtube_Viewers
             int sec = 600;
             while (true)
             {
-                if (stopwatch.ElapsedTicks >= sec)
+                if (stopwatch.ElapsedTicks * 10 >= sec)
                 {
                     string proxies = String.Empty;
                     foreach(string proxyUrl in Urls)
