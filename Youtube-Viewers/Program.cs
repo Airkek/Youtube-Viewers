@@ -25,8 +25,8 @@ namespace Youtube_Viewers
         static int botted = 0;
         static int errors = 0;
 
-        static string viewers = "Parsing...";
-        static string title = "Parsing...";
+        static string viewers = "Connecting";
+        static string title = "Connecting";
 
         public static string[] Urls = new[] {
             "https://raw.githubusercontent.com/clarketm/proxy-list/master/proxy-list-raw.txt",
@@ -131,6 +131,7 @@ namespace Youtube_Viewers
                 }
                 break;
             }
+            redoproxe:
 
             if (updateProxy)
             {
@@ -145,7 +146,16 @@ namespace Youtube_Viewers
                     Console.WriteLine($"Downloading proxies from '{proxyUrl}'");
                     using (HttpRequest req = new HttpRequest())
                     {
-                        totalProxies += req.Get(proxyUrl).ToString() + "\r\n";
+                        try
+                        {
+                            totalProxies += req.Get(proxyUrl).ToString() + "\r\n";
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Couldnt Update by url. You will have to do manually");
+                            updateProxy = false;
+                            goto redoproxe;
+                        }
                     }
                 }
 
@@ -215,7 +225,7 @@ namespace Youtube_Viewers
             int sec = 600;
             while (true)
             {
-                if (stopwatch.ElapsedMilliseconds / 1000 >= sec)
+                if (stopwatch.ElapsedTicks * 10 >= sec)
                 {
                     string proxies = String.Empty;
                     foreach(string proxyUrl in Urls)
@@ -228,6 +238,8 @@ namespace Youtube_Viewers
                             }
                             catch
                             {
+                                MessageBox.Show("error in procees of finding url please enter maually");
+                                Process.GetCurrentProcess().Kill();
                             }
                         }
                     }
