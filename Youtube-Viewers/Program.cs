@@ -285,8 +285,8 @@ namespace Youtube_Viewers
             {
                 Console.SetCursorPosition(0, pos);
                 Console.WriteLine(
-                    $"Success connections: {botted}\r\n" +
-                    $"Errors: {errors}\r\n" +
+                    $"Success connections: {botted}          \r\n" +
+                    $"Errors: {errors}         \r\n" +
                     $"Proxies: {scraper.Length}          \r\n" +
                     $"Threads: {threadsCount}            \r\n" +
                     $"Title: {title}{new string(' ', Console.WindowWidth - title.Length)}\r\n" +
