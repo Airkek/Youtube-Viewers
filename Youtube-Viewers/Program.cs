@@ -251,7 +251,7 @@ namespace Youtube_Viewers
                             }
                             catch
                             {
-                                // ignored
+                                // ignore
                             }
                         }
 
@@ -285,7 +285,13 @@ namespace Youtube_Viewers
             {
                 Console.SetCursorPosition(0, pos);
                 Console.WriteLine(
-                    $"\r\nBotted: {botted}\r\nErrors: {errors}\r\nProxies: {scraper.Length}          \r\nThreads: {threadsCount}\r\nTitle: {title}          \r\nViewers: {viewers}          \r\n");
+                    $"Success connections: {botted}\r\n" +
+                    $"Errors: {errors}\r\n" +
+                    $"Proxies: {scraper.Length}          \r\n" +
+                    $"Threads: {threadsCount}            \r\n" +
+                    $"Title: {title}{new string(' ', Console.WindowWidth - title.Length)}\r\n" +
+                    $"Viewers: {viewers}{new string(' ', Console.WindowWidth - viewers.Length)}\r\n"
+                );
                 Thread.Sleep(250);
             }
         }
