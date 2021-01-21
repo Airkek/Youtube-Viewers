@@ -1,41 +1,44 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Windows.Forms;
-using System.IO;
 using System.Diagnostics;
-using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Web;
+using System.Windows.Forms;
 using Leaf.xNet;
 using Youtube_Viewers.Helpers;
+using HttpRequest = Leaf.xNet.HttpRequest;
+using HttpResponse = Leaf.xNet.HttpResponse;
 
 namespace Youtube_Viewers
 {
-    class Program
+    internal class Program
     {
-        static string id;
-        static int threadsCount;
+        private static string id;
+        private static int threadsCount;
 
-        static int pos = 0;
+        private static int pos;
 
-        static ProxyQueue scraper;
-        static ProxyType proxyType;
-        static bool updateProxy = false;
+        private static ProxyQueue scraper;
+        private static ProxyType proxyType;
+        private static bool updateProxy;
 
-        static int botted = 0;
-        static int errors = 0;
+        private static int botted;
+        private static int errors;
 
-        static string viewers = "Connecting";
-        static string title = "Connecting";
+        private static string viewers = "Connecting";
+        private static string title = "Connecting";
 
-        public static string[] Urls = new[] {
+        public static string[] Urls =
+        {
             "https://raw.githubusercontent.com/clarketm/proxy-list/master/proxy-list-raw.txt",
             "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks4.txt",
             "https://api.proxyscrape.com/?request=getproxies&proxytype=socks4&timeout=9000&ssl=yes",
             "https://www.proxy-list.download/api/v1/get?type=socks4"
         };
 
-        static string intro = @"/_/\/_/\   /________/\ /_______/\     /_____/\     /________/\ 
+        private static readonly string intro = @"/_/\/_/\   /________/\ /_______/\     /_____/\     /________/\ 
 \ \ \ \ \  \__.::.__\/ \::: _  \ \    \:::_ \ \    \__.::.__\/ 
  \:\_\ \ \    \::\ \    \::(_)  \/_    \:\ \ \ \      \::\ \   
   \::::_\/     \::\ \    \::  _  \ \    \:\ \ \ \      \::\ \  
@@ -43,15 +46,12 @@ namespace Youtube_Viewers
      \__\/       \__\/     \_______\/     \_____\/       \__\/ 
 ";
 
-        static string gitRepo = "https://github.com/Airkek/Youtube-Viewers";
+        private static readonly string gitRepo = "https://github.com/Airkek/Youtube-Viewers";
 
         [STAThread]
-        static void Main(string[] args)
+        private static void Main()
         {
-            if (!File.Exists("proxy_url.txt"))
-            {
-                File.AppendAllText("proxy_url.txt", string.Join("\r\n", Urls));
-            }
+            if (!File.Exists("proxy_url.txt")) File.AppendAllText("proxy_url.txt", string.Join("\r\n", Urls));
 
             Console.Title = $"YTBot | {gitRepo}";
             Logo(ConsoleColor.Cyan);
@@ -69,11 +69,11 @@ namespace Youtube_Viewers
                 Console.Write("Your choice: ");
                 Console.ForegroundColor = ConsoleColor.Cyan;
 
-                char k = Console.ReadKey().KeyChar;
+                var k = Console.ReadKey().KeyChar;
 
                 try
                 {
-                    int key = int.Parse(k.ToString());
+                    var key = int.Parse(k.ToString());
                     switch (key)
                     {
                         case 1:
@@ -107,11 +107,11 @@ namespace Youtube_Viewers
 
                 Console.Write("Your choice: ");
 
-                char k = Console.ReadKey().KeyChar;
+                var k = Console.ReadKey().KeyChar;
 
                 try
                 {
-                    int pt = int.Parse(k.ToString());
+                    var pt = int.Parse(k.ToString());
                     switch (pt)
                     {
                         case 1:
@@ -129,34 +129,51 @@ namespace Youtube_Viewers
                 {
                     continue;
                 }
+
                 break;
             }
-            redoproxe:
 
+            reProxy:
             if (updateProxy)
             {
-                Urls = File.ReadAllText("proxy_url.txt").Trim().Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+                Urls = File.ReadAllText("proxy_url.txt").Trim().Split(new[] {"\r\n", "\n"}, StringSplitOptions.None);
                 Console.WriteLine("Proxy links: \r\n" + string.Join("\r\n", Urls));
                 Console.WriteLine("You can set your own links in 'proxy_url.txt' file");
 
-                string totalProxies = String.Empty;
+                var totalProxies = string.Empty;
 
-                foreach(string proxyUrl in Urls)
+                using (var req = new HttpRequest
                 {
-                    Console.WriteLine($"Downloading proxies from '{proxyUrl}'");
-                    using (HttpRequest req = new HttpRequest())
+                    ConnectTimeout = 3000
+                })
+                {
+                    foreach (var proxyUrl in Urls)
                     {
-                        try
+                        Console.ResetColor();
+                        Console.Write($"Downloading proxies from '{proxyUrl}': ");
                         {
-                            totalProxies += req.Get(proxyUrl).ToString() + "\r\n";
-                        }
-                        catch
-                        {
-                            MessageBox.Show("Couldnt Update by url. You will have to do manually");
-                            updateProxy = false;
-                            goto redoproxe;
+                            try
+                            {
+                                totalProxies += req.Get(proxyUrl) + "\r\n";
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.WriteLine("Success");
+                                Console.ResetColor();
+                            }
+                            catch
+                            {
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine("Error");
+                                Console.ResetColor();
+                            }
                         }
                     }
+                }
+
+                if (totalProxies.Length == 0)
+                {
+                    MessageBox.Show("Couldn't update proxies by url. You will have to do manually");
+                    updateProxy = false;
+                    goto reProxy;
                 }
 
                 scraper = new ProxyQueue(totalProxies, proxyType);
@@ -165,13 +182,10 @@ namespace Youtube_Viewers
             {
                 Console.WriteLine("Select proxy list");
 
-                OpenFileDialog dialog = new OpenFileDialog();
+                var dialog = new OpenFileDialog();
                 dialog.Filter = "Proxy list (*.txt)|*.txt";
 
-                if (dialog.ShowDialog() != DialogResult.OK)
-                {
-                    return;
-                }
+                if (dialog.ShowDialog() != DialogResult.OK) return;
 
                 scraper = new ProxyQueue(File.ReadAllText(dialog.FileName), proxyType);
             }
@@ -180,39 +194,39 @@ namespace Youtube_Viewers
 
             Logo(ConsoleColor.Green);
 
-            List<Thread> threads = new List<Thread>();
+            var threads = new List<Thread>();
 
-            Thread logWorker = new Thread(Log);
+            var logWorker = new Thread(Log);
             logWorker.Start();
             threads.Add(logWorker);
 
             if (updateProxy)
             {
-                Thread proxyWorker = new Thread(proxyUpdater);
+                var proxyWorker = new Thread(proxyUpdater);
                 proxyWorker.Start();
                 threads.Add(proxyWorker);
             }
-            
-            for (int i = 0; i < threadsCount; i++)
+
+            for (var i = 0; i < threadsCount; i++)
             {
-                Thread t = new Thread(Worker);
+                var t = new Thread(Worker);
                 t.Start();
                 threads.Add(t);
             }
 
-            foreach (Thread t in threads)
+            foreach (var t in threads)
                 t.Join();
 
             Console.ReadKey();
         }
 
-        static string dialog(string question)
+        private static string dialog(string question)
         {
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write($"{question}: ");
             Console.ForegroundColor = ConsoleColor.Cyan;
 
-            string val = Console.ReadLine().Trim();
+            var val = Console.ReadLine().Trim();
 
             Logo(ConsoleColor.Cyan);
             return val;
@@ -220,38 +234,36 @@ namespace Youtube_Viewers
 
         private static void proxyUpdater()
         {
-            Stopwatch stopwatch = new Stopwatch();
+            var stopwatch = new Stopwatch();
             stopwatch.Start();
-            int sec = 600;
+            var sec = 600;
             while (true)
             {
                 if (stopwatch.ElapsedTicks * 10 >= sec)
                 {
-                    string proxies = String.Empty;
-                    foreach(string proxyUrl in Urls)
-                    {
-                        using (HttpRequest req = new HttpRequest())
+                    var proxies = string.Empty;
+                    foreach (var proxyUrl in Urls)
+                        using (var req = new HttpRequest())
                         {
                             try
                             {
-                                proxies += req.Get(proxyUrl).ToString() + "\r\n";
+                                proxies += req.Get(proxyUrl) + "\r\n";
                             }
                             catch
                             {
-                                MessageBox.Show("error in procees of finding url please enter maually");
-                                Process.GetCurrentProcess().Kill();
+                                // ignored
                             }
                         }
-                    }
 
                     scraper.SafeUpdate(proxies);
                     sec += 600;
                 }
+
                 Thread.Sleep(1000);
             }
         }
 
-        static void Logo(ConsoleColor color)
+        private static void Logo(ConsoleColor color)
         {
             Console.Clear();
 
@@ -267,82 +279,81 @@ namespace Youtube_Viewers
             pos = Console.CursorTop;
         }
 
-        static void Log()
+        private static void Log()
         {
             while (true)
             {
                 Console.SetCursorPosition(0, pos);
-                Console.WriteLine($"\r\nBotted: {botted}\r\nErrors: {errors}\r\nProxies: {scraper.Length}          \r\nThreads: {threadsCount}\r\nTitle: {title}          \r\nViewers: {viewers}          \r\n");
+                Console.WriteLine(
+                    $"\r\nBotted: {botted}\r\nErrors: {errors}\r\nProxies: {scraper.Length}          \r\nThreads: {threadsCount}\r\nTitle: {title}          \r\nViewers: {viewers}          \r\n");
                 Thread.Sleep(250);
             }
         }
 
-        static string buildUrl(Dictionary<string, string> args)
+        private static string buildUrl(Dictionary<string, string> args)
         {
-            string url = "https://s.youtube.com/api/stats/watchtime?";
-            foreach(KeyValuePair<string, string> arg in args)
-            {
-                url += $"{arg.Key}={arg.Value}&";
-            }
+            var url = "https://s.youtube.com/api/stats/watchtime?";
+            foreach (var arg in args) url += $"{arg.Key}={arg.Value}&";
             return url;
         }
 
-        static void Worker()
+        private static void Worker()
         {
-            Random random = new Random();
+            var random = new Random();
 
             while (true)
             {
                 try
                 {
-                    using (HttpRequest req = new HttpRequest()
+                    using (var req = new HttpRequest
                     {
                         Proxy = scraper.Next()
                     })
                     {
                         HttpResponse res;
-                        
+
                         req.UserAgentRandomize();
 
                         res = req.Get($"https://www.youtube.com/watch?v={id}");
 
-                        string sres = res.ToString();
-                        string viewersTemp = string.Join("", RegularExpressions.Viewers.Match(sres).Groups[1].Value.Where(c => char.IsDigit(c)));
+                        var sres = res.ToString();
+                        var viewersTemp = string.Join("",
+                            RegularExpressions.Viewers.Match(sres).Groups[1].Value.Where(c => char.IsDigit(c)));
 
                         if (!string.IsNullOrEmpty(viewersTemp))
                             viewers = viewersTemp;
 
                         title = RegularExpressions.Title.Match(sres).Groups[1].Value;
 
-                        string url = RegularExpressions.ViewUrl.Match(sres).Groups[1].Value;
+                        var url = RegularExpressions.ViewUrl.Match(sres).Groups[1].Value;
                         url = url.Replace(@"\u0026", "&").Replace("%2C", ",").Replace(@"\/", "/");
 
-                        NameValueCollection query = System.Web.HttpUtility.ParseQueryString(url);
+                        var query = HttpUtility.ParseQueryString(url);
 
-                        string cl = query.Get(query.AllKeys[0]);
-                        string ei = query.Get("ei");
-                        string of = query.Get("of");
-                        string vm = query.Get("vm");
+                        var cl = query.Get(query.AllKeys[0]);
+                        var ei = query.Get("ei");
+                        var of = query.Get("of");
+                        var vm = query.Get("vm");
 
-                        byte[] buffer = new byte[100];
+                        var buffer = new byte[100];
 
                         random.NextBytes(buffer);
 
-                        string cpn = RegularExpressions.Trash.Replace(Convert.ToBase64String(buffer), "").Substring(0, 16);
+                        var cpn = RegularExpressions.Trash.Replace(Convert.ToBase64String(buffer), "").Substring(0, 16);
 
-                        int st = random.Next(1000, 10000);
-                        int et = st + random.Next(200, 700);
+                        var st = random.Next(1000, 10000);
+                        var et = st + random.Next(200, 700);
 
-                        int rt = random.Next(10, 200);
+                        var rt = random.Next(10, 200);
 
-                        int lact = random.Next(1000, 8000);
-                        int rtn = rt + 300;
+                        var lact = random.Next(1000, 8000);
+                        var rtn = rt + 300;
 
-                        Dictionary<string, string> args = new Dictionary<string, string>();
+                        var args = new Dictionary<string, string>();
 
                         args["ns"] = "yt";
                         args["el"] = "detailpage";
-                        args["cpn"] = cpn.ToString();
+                        args["cpn"] = cpn;
                         args["docid"] = id;
                         args["ver"] = "2";
                         args["cmt"] = et.ToString();
@@ -375,12 +386,12 @@ namespace Youtube_Viewers
                         args["st"] = st.ToString();
                         args["et"] = et.ToString();
 
-                        string urlToGet = buildUrl(args);
+                        var urlToGet = buildUrl(args);
 
-                        req.AcceptEncoding ="gzip, deflate";
+                        req.AcceptEncoding = "gzip, deflate";
                         req.AddHeader("Host", "www.youtube.com");
 
-                        res = req.Get(urlToGet);
+                        req.Get(urlToGet);
                         Interlocked.Increment(ref botted);
                     }
                 }

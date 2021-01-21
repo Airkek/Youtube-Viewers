@@ -5,52 +5,62 @@ using Leaf.xNet;
 
 namespace Youtube_Viewers.Helpers
 {
-    class ProxyQueue
+    internal class ProxyQueue
     {
-        ConcurrentQueue<ProxyClient> proxies;
-        ProxyClient[] plist;
+        private readonly object locker = new object();
+        private ProxyClient[] plist;
+        private ConcurrentQueue<ProxyClient> proxies;
 
-        object locker = new object();
+        public ProxyQueue(string pr, ProxyType type)
+        {
+            Type = type;
+            SafeUpdate(pr);
+            proxies = new ConcurrentQueue<ProxyClient>(plist);
+        }
 
         public int Count => proxies.Count;
         public int Length => plist.Length;
 
-        public ProxyType Type { get; private set; }
+        public ProxyType Type { get; }
 
         private List<string> GetProxies(string str)
         {
-            HashSet<string> res = new HashSet<string>();
-            
-            foreach (string proxy in MatchAndFormatProxies(str))
-            {
+            var res = new HashSet<string>();
+
+            foreach (var proxy in MatchAndFormatProxies(str))
                 try
                 {
                     if (!res.Contains(proxy))
                         res.Add(proxy);
                 }
-                catch { }
-            }
-            
+                catch
+                {
+                    // ignored
+                }
+
             return new List<string>(res);
         }
 
         private List<string> MatchAndFormatProxies(string str)
         {
-            List<string> res = new List<string>();
+            var res = new List<string>();
 
-            string[] list = str.Split(new[] { "\n", "\r\n" }, StringSplitOptions.None);
+            var list = str.Split(new[] {"\n", "\r\n"}, StringSplitOptions.None);
 
-            foreach (string lineStock in list)
+            foreach (var lineStock in list)
             {
-                string line = lineStock.Trim();
-                
+                var line = lineStock.Trim();
+
                 try
                 {
-                    string formatted = FormatLine(line);
+                    var formatted = FormatLine(line);
                     if (!string.IsNullOrEmpty(formatted))
                         res.Add(formatted);
                 }
-                catch { }                    
+                catch
+                {
+                    // ignored
+                }
             }
 
             return res;
@@ -58,24 +68,21 @@ namespace Youtube_Viewers.Helpers
 
         private string FormatLine(string line)
         {
-            string[] lineSplit = line.Split(':');
-            if (lineSplit.Length < 2 || lineSplit.Length > 4)
-            {
-                return String.Empty;
-            }
+            var lineSplit = line.Split(':');
+            if (lineSplit.Length < 2 || lineSplit.Length > 4) return string.Empty;
 
-            string formatted = String.Empty;
+            var formatted = string.Empty;
 
             if (line.Contains("@") && lineSplit.Length == 3)
             {
                 lineSplit = line.Split('@');
-                string userPass = lineSplit[0];
-                string address = lineSplit[1];
+                var userPass = lineSplit[0];
+                var address = lineSplit[1];
 
-                int port = int.Parse(address.Split(':')[1]);
+                var port = int.Parse(address.Split(':')[1]);
 
                 if (port > 65535 || port < 1)
-                    return String.Empty;
+                    return string.Empty;
 
                 formatted = $"{Type.ToString().ToLower()}://{address}:{userPass}";
             }
@@ -83,21 +90,22 @@ namespace Youtube_Viewers.Helpers
             {
                 if (lineSplit[0].Contains(".") && lineSplit[0].Split('.').Length == 4)
                 {
-                    int port = int.Parse(lineSplit[1]);
+                    var port = int.Parse(lineSplit[1]);
 
                     if (port > 65535 || port < 1)
-                        return String.Empty;
+                        return string.Empty;
 
                     formatted = $"{Type.ToString().ToLower()}://{line}";
                 }
                 else if (lineSplit.Length == 4 && lineSplit[2].Contains(".") && lineSplit[0].Split('.').Length == 4)
                 {
-                    int port = int.Parse(lineSplit[3]);
+                    var port = int.Parse(lineSplit[3]);
 
                     if (port > 65535 || port < 1)
-                        return String.Empty;
+                        return string.Empty;
 
-                    formatted = $"{Type.ToString().ToLower()}://{lineSplit[2]}:{lineSplit[3]}:{lineSplit[0]}:{lineSplit[1]}";
+                    formatted =
+                        $"{Type.ToString().ToLower()}://{lineSplit[2]}:{lineSplit[3]}:{lineSplit[0]}:{lineSplit[1]}";
                 }
             }
 
@@ -108,36 +116,26 @@ namespace Youtube_Viewers.Helpers
         {
             lock (locker)
             {
-                List<ProxyClient> prxs = new List<ProxyClient>();
+                var prxs = new List<ProxyClient>();
                 GetProxies(pr).ForEach(x => prxs.Add(ProxyClient.Parse(x)));
                 plist = prxs.ToArray();
             }
         }
 
-        public ProxyQueue(string pr, ProxyType type)
-        {
-            Type = type;
-            SafeUpdate(pr);
-            proxies = new ConcurrentQueue<ProxyClient>(plist);
-        }
-
         public ProxyClient Next()
         {
             if (proxies.Count == 0)
-            {
                 lock (locker)
                 {
                     if (proxies.Count == 0)
                         proxies = new ConcurrentQueue<ProxyClient>(plist);
                 }
-            }
 
             ProxyClient res;
 
             if (proxies.TryDequeue(out res) && res != null)
                 return res;
-            else
-                throw new HttpException();
+            throw new HttpException();
         }
     }
 }
