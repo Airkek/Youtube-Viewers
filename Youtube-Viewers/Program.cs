@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -13,7 +14,7 @@ using HttpResponse = Leaf.xNet.HttpResponse;
 
 namespace Youtube_Viewers
 {
-    internal class Program
+    internal static class Program
     {
         private static string id;
         private static int threadsCount;
@@ -30,7 +31,7 @@ namespace Youtube_Viewers
         private static string viewers = "Connecting";
         private static string title = "Connecting";
 
-        public static string[] Urls =
+        private static string[] Urls =
         {
             "https://raw.githubusercontent.com/clarketm/proxy-list/master/proxy-list-raw.txt",
             "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks4.txt",
@@ -38,7 +39,7 @@ namespace Youtube_Viewers
             "https://www.proxy-list.download/api/v1/get?type=socks4"
         };
 
-        private static readonly string intro = @"/_/\/_/\   /________/\ /_______/\     /_____/\     /________/\ 
+        private const string intro = @"/_/\/_/\   /________/\ /_______/\     /_____/\     /________/\ 
 \ \ \ \ \  \__.::.__\/ \::: _  \ \    \:::_ \ \    \__.::.__\/ 
  \:\_\ \ \    \::\ \    \::(_)  \/_    \:\ \ \ \      \::\ \   
   \::::_\/     \::\ \    \::  _  \ \    \:\ \ \ \      \::\ \  
@@ -46,7 +47,7 @@ namespace Youtube_Viewers
      \__\/       \__\/     \_______\/     \_____\/       \__\/ 
 ";
 
-        private static readonly string gitRepo = "https://github.com/Airkek/Youtube-Viewers";
+        private const string gitRepo = "https://github.com/Airkek/Youtube-Viewers";
 
         [STAThread]
         private static void Main()
@@ -289,8 +290,8 @@ namespace Youtube_Viewers
                     $"Errors: {errors}         \r\n" +
                     $"Proxies: {scraper.Length}          \r\n" +
                     $"Threads: {threadsCount}            \r\n" +
-                    $"Title: {title}{new string(' ', Console.WindowWidth - title.Length)}\r\n" +
-                    $"Viewers: {viewers}{new string(' ', Console.WindowWidth - viewers.Length)}\r\n"
+                    $"Title: {title}{new string(' ', Console.WindowWidth > title.Length ? Console.WindowWidth - title.Length : 0)}\r\n" +
+                    $"Viewers: {viewers}{new string(' ', Console.WindowWidth > viewers.Length ? Console.WindowWidth - viewers.Length : 0)}\r\n"
                 );
                 Thread.Sleep(250);
             }
@@ -298,9 +299,12 @@ namespace Youtube_Viewers
 
         private static string buildUrl(Dictionary<string, string> args)
         {
-            var url = "https://s.youtube.com/api/stats/watchtime?";
-            foreach (var arg in args) url += $"{arg.Key}={arg.Value}&";
-            return url;
+            var s = args.Aggregate(
+                "https://s.youtube.com/api/stats/watchtime?", 
+                (current, arg) => current + $"{arg.Key}={arg.Value}&"
+            );
+
+            return s.Substring(0, s.Length - 1); // trim & on end
         }
 
         private static void Worker()
@@ -318,13 +322,14 @@ namespace Youtube_Viewers
                     {
                         HttpResponse res;
 
-                        req.UserAgentRandomize();
+                        req.UserAgent =
+                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36";
 
                         res = req.Get($"https://www.youtube.com/watch?v={id}");
 
                         var sres = res.ToString();
                         var viewersTemp = string.Join("",
-                            RegularExpressions.Viewers.Match(sres).Groups[1].Value.Where(c => char.IsDigit(c)));
+                            RegularExpressions.Viewers.Match(sres).Groups[1].Value.Where(char.IsDigit));
 
                         if (!string.IsNullOrEmpty(viewersTemp))
                             viewers = viewersTemp;
@@ -334,63 +339,68 @@ namespace Youtube_Viewers
                         var url = RegularExpressions.ViewUrl.Match(sres).Groups[1].Value;
                         url = url.Replace(@"\u0026", "&").Replace("%2C", ",").Replace(@"\/", "/");
 
-                        var query = HttpUtility.ParseQueryString(url);
+                        var query = HttpUtility.ParseQueryString(url.Split('?')[1]);
 
-                        var cl = query.Get(query.AllKeys[0]);
+                        var cl = query.Get("cl");
                         var ei = query.Get("ei");
                         var of = query.Get("of");
                         var vm = query.Get("vm");
-
-                        var buffer = new byte[100];
+                        
+                        var buffer = new byte[32];
 
                         random.NextBytes(buffer);
 
                         var cpn = RegularExpressions.Trash.Replace(Convert.ToBase64String(buffer), "").Substring(0, 16);
 
-                        var st = random.Next(1000, 10000);
-                        var et = st + random.Next(200, 700);
+                        var st = random.Next(1000000, 1100000) / 1000f;
+                        var et = random.Next(1000000, 1100000) / 1000f;
 
-                        var rt = random.Next(10, 200);
+                        var rt = random.Next(8000, 1000000) / 1000f;
 
-                        var lact = random.Next(1000, 8000);
-                        var rtn = rt + 300;
-
-                        var args = new Dictionary<string, string>();
-
-                        args["ns"] = "yt";
-                        args["el"] = "detailpage";
-                        args["cpn"] = cpn;
-                        args["docid"] = id;
-                        args["ver"] = "2";
-                        args["cmt"] = et.ToString();
-                        args["ei"] = ei;
-                        args["fmt"] = "243";
-                        args["fs"] = "0";
-                        args["rt"] = rt.ToString();
-                        args["of"] = of;
-                        args["euri"] = "";
-                        args["lact"] = lact.ToString();
-                        args["live"] = "dvr";
-                        args["cl"] = cl;
-                        args["state"] = "playing";
-                        args["vm"] = vm;
-                        args["volume"] = "100";
-                        args["cbr"] = "Firefox"; //TODO: parse from header
-                        args["cbrver"] = "83.0"; // ^
-                        args["c"] = "WEB";
-                        args["cplayer"] = "UNIPLAYER";
-                        args["cver"] = "2.20201210.01.00";
-                        args["cos"] = "Windows";
-                        args["cosver"] = "10.0";
-                        args["cplatform"] = "DESKTOP";
-                        args["delay"] = "5";
-                        args["hl"] = "en_US";
-                        args["rtn"] = rtn.ToString();
-                        args["aftm"] = "140";
-                        args["rti"] = rt.ToString();
-                        args["muted"] = "0";
-                        args["st"] = st.ToString();
-                        args["et"] = et.ToString();
+                        var args = new Dictionary<string, string>
+                        {
+                            ["ns"] = "yt",
+                            ["el"] = "detailpage",
+                            ["cpn"] = cpn,
+                            ["docid"] = id,
+                            ["ver"] = "2",
+                            ["referrer"] = "",
+                            ["cmt"] = et.ToString("N3").Replace(",", "."),
+                            ["ei"] = ei,
+                            ["fmt"] = random.Next(100, 500).ToString(),
+                            ["fs"] = "0",
+                            ["rt"] = rt.ToString("N3").Replace(",", "."),
+                            ["of"] = of,
+                            ["euri"] = "",
+                            ["lact"] = random.Next(7700, 9000).ToString(),
+                            ["live"] = "dvr",
+                            ["cl"] = cl,
+                            ["state"] = "playing",
+                            ["vm"] = vm,
+                            ["volume"] = "100",
+                            ["cbr"] = "Chrome",
+                            ["cbrver"] = "91.0.4472.124",
+                            ["c"] = "WEB",
+                            ["cplayer"] = "UNIPLAYER",
+                            ["cver"] = "2.20210628.06.00-canary_experiment",
+                            ["cos"] = "Windows",
+                            ["cosver"] = "10.0",
+                            ["cplatform"] = "DESKTOP",
+                            ["delay"] = "5",
+                            ["hl"] = "en_US",
+                            ["cr"] = "EN",
+                            ["uga"] = "m26",
+                            ["rtn"] = random.Next(15, 30).ToString(),
+                            ["feature"] = "g-high-rec",
+                            ["afmt"] = "140",
+                            ["lio"] = (((DateTimeOffset) DateTime.Now).ToUnixTimeMilliseconds() / 1000d).ToString("N3").Replace(",", "."),
+                            ["idpj"] = "-1",
+                            ["ldpj"] = "-33",
+                            ["rti"] = rt.ToString("N0"),
+                            ["st"] = st.ToString("N3").Replace(",", "."),
+                            ["et"] = et.ToString("N3").Replace(",", "."),
+                            ["muted"] = "0"
+                        };
 
                         var urlToGet = buildUrl(args);
 
@@ -398,7 +408,9 @@ namespace Youtube_Viewers
                         req.AddHeader("Host", "www.youtube.com");
 
                         req.Get(urlToGet);
+                        
                         Interlocked.Increment(ref botted);
+
                     }
                 }
                 catch
