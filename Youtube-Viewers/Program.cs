@@ -300,7 +300,7 @@ namespace Youtube_Viewers
         private static string buildUrl(Dictionary<string, string> args)
         {
             var s = args.Aggregate(
-                "https://s.youtube.com/api/stats/watchtime?", 
+                "https://s.youtube.com/api/stats/atr?", 
                 (current, arg) => current + $"{arg.Key}={arg.Value}&"
             );
 
@@ -328,8 +328,7 @@ namespace Youtube_Viewers
                         res = req.Get($"https://www.youtube.com/watch?v={id}");
 
                         var sres = res.ToString();
-                        var viewersTemp = string.Join("",
-                            RegularExpressions.Viewers.Match(sres).Groups[1].Value.Where(char.IsDigit));
+                        var viewersTemp = new string(RegularExpressions.Viewers.Match(sres).Groups[1].Value.Where(char.IsDigit).ToArray());
 
                         if (!string.IsNullOrEmpty(viewersTemp))
                             viewers = viewersTemp;
@@ -337,7 +336,7 @@ namespace Youtube_Viewers
                         title = RegularExpressions.Title.Match(sres).Groups[1].Value;
 
                         var url = RegularExpressions.ViewUrl.Match(sres).Groups[1].Value;
-                        url = url.Replace(@"\u0026", "&").Replace("%2C", ",").Replace(@"\/", "/");
+                        url = url.Replace(@"\u0026", "\u0026").Replace("%2C", ",").Replace(@"\/", "/");
 
                         var query = HttpUtility.ParseQueryString(url.Split('?')[1]);
 
