@@ -300,7 +300,7 @@ namespace Youtube_Viewers
         private static string buildUrl(Dictionary<string, string> args)
         {
             var s = args.Aggregate(
-                "https://s.youtube.com/api/stats/atr?", 
+                "https://twitch.tv/api/stats/atr?", 
                 (current, arg) => current + $"{arg.Key}={arg.Value}&"
             );
 
