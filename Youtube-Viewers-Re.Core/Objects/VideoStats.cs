@@ -4,8 +4,8 @@
     {
         public readonly int Viewers;
         public readonly string Title;
-        
-        internal VideoStats(string title, int viewers)
+
+        public VideoStats(string title, int viewers)
         {
             Title = title;
             Viewers = viewers;

@@ -15,7 +15,10 @@ namespace Youtube_Viewers_Re.Core
         public readonly string Stream;
         public readonly string StreamUrl;
 
-        private readonly HttpRequest Request = new HttpRequest();
+        private readonly HttpRequest Request = new HttpRequest
+        {
+            Cookies = new CookieStorage()
+        };
         
         private readonly Random Random = new Random();
 
@@ -35,6 +38,8 @@ namespace Youtube_Viewers_Re.Core
         {
             Proxy = proxy;
         }
+
+        public VideoStats Stats = new VideoStats(string.Empty, 0);
 
         /// <summary>
         /// Метод будет вызываться в потоках боттера, очевидно будут накручивать просмотры
@@ -62,23 +67,6 @@ namespace Youtube_Viewers_Re.Core
         }
 
         /// <summary>
-        /// Метод будет использоваться отдельным потоком исключительно для получения статистики видео
-        /// </summary>
-        /// <returns>Статистика видео</returns>
-        public VideoStats GetStats()
-        {
-            var response = Request.Get(StreamUrl).ToString();
-            
-            var viewers = string.Join(string.Empty, RegularExpressions.Viewers.Match(response).Groups[1].Value.Where(char.IsDigit));
-            var title = RegularExpressions.Title.Match(response).Groups[1].Value;
-
-            if (string.IsNullOrWhiteSpace(title) || string.IsNullOrEmpty(viewers))
-                throw new Exception("Empty data");
-            
-            return new VideoStats(title, int.Parse(viewers));
-        }
-
-        /// <summary>
         /// Метод для получения данных для сборки url
         /// </summary>
         /// <returns>string[]
@@ -89,6 +77,12 @@ namespace Youtube_Viewers_Re.Core
         private string[] GetUrls()
         {
             var response = Request.Get(StreamUrl).ToString();
+
+            var viewers = string.Join(string.Empty, RegularExpressions.Viewers.Match(response).Groups[1].Value.Where(char.IsDigit));
+            var title = RegularExpressions.Title.Match(response).Groups[1].Value;
+
+            if (!string.IsNullOrWhiteSpace(title) && !string.IsNullOrEmpty(viewers))
+                Stats = new VideoStats(title, int.Parse(viewers));
             
             var start = DateTime.UtcNow;
             
