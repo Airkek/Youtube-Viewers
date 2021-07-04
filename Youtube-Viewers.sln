@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Youtube-Viewers-Re.GUI", "Y
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Youtube-Viewers-Re.CLI", "Youtube-Viewers-Re.CLI\Youtube-Viewers-Re.CLI.csproj", "{88C1E17B-52EF-4295-9CAB-2EB567728046}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Youtube-Viewers.Core", "Youtube-Viewers.Core\Youtube-Viewers.Core.csproj", "{EB10F04B-2714-4091-A008-FF4BE980CC12}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Youtube-Viewers-Re.Core", "Youtube-Viewers-Re.Core\Youtube-Viewers-Re.Core.csproj", "{EB10F04B-2714-4091-A008-FF4BE980CC12}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

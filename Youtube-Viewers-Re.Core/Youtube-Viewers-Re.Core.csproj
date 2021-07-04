@@ -7,8 +7,8 @@
         <ProjectGuid>{EB10F04B-2714-4091-A008-FF4BE980CC12}</ProjectGuid>
         <OutputType>Library</OutputType>
         <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>Youtube_Viewers.Core</RootNamespace>
-        <AssemblyName>Youtube_Viewers.Core</AssemblyName>
+        <RootNamespace>Youtube_Viewers_Re.Core</RootNamespace>
+        <AssemblyName>Youtube_Viewers_Re.Core</AssemblyName>
         <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
     </PropertyGroup>
@@ -45,7 +45,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Enums\WorkerResponseStatus.cs" />
-        <Compile Include="Objects\WorkerResponse.cs" />
+        <Compile Include="Objects\VideoStats.cs" />
         <Compile Include="Utils\RegularExpressions.cs" />
         <Compile Include="ViewersCore.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
