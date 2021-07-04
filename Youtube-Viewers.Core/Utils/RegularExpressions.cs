@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Youtube_Viewers_Re.Core.Utils
+namespace Youtube_Viewers.Core.Utils
 {
     internal static class RegularExpressions
     {

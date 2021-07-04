@@ -1,4 +1,4 @@
-﻿namespace Youtube_Viewers_Re.Core.Enums
+﻿namespace Youtube_Viewers.Core.Enums
 {
     public enum WorkerResponseStatus
     {

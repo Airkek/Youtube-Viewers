@@ -1,8 +1,8 @@
 ﻿using System;
 using Leaf.xNet;
-using Youtube_Viewers_Re.Core.Objects;
+using Youtube_Viewers.Core.Objects;
 
-namespace Youtube_Viewers_Re.CLI.Utils
+namespace Youtube_Viewers.CLI.Utils
 {
     public static class XConsole
     {

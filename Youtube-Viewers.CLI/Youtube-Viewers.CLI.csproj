@@ -8,8 +8,8 @@
         <ProjectGuid>{88C1E17B-52EF-4295-9CAB-2EB567728046}</ProjectGuid>
         <OutputType>Exe</OutputType>
         <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>Youtube_Viewers_Re.CLI</RootNamespace>
-        <AssemblyName>Youtube_Viewers_Re.CLI</AssemblyName>
+        <RootNamespace>Youtube_Viewers.CLI</RootNamespace>
+        <AssemblyName>Youtube-Viewers.CLI</AssemblyName>
         <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
     </PropertyGroup>
@@ -67,17 +67,17 @@
         <Compile Include="Utils\XConsole.cs" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\Youtube-Viewers-Re.Config\Youtube-Viewers-Re.Config.csproj">
+      <ProjectReference Include="..\Youtube-Viewers.Config\Youtube-Viewers.Config.csproj">
         <Project>{85b86a90-8160-4033-881a-b85aed70ed61}</Project>
-        <Name>Youtube-Viewers-Re.Config</Name>
+        <Name>Youtube-Viewers.Config</Name>
       </ProjectReference>
-      <ProjectReference Include="..\Youtube-Viewers-Re.Core\Youtube-Viewers-Re.Core.csproj">
+      <ProjectReference Include="..\Youtube-Viewers.Core\Youtube-Viewers.Core.csproj">
         <Project>{eb10f04b-2714-4091-a008-ff4be980cc12}</Project>
-        <Name>Youtube-Viewers-Re.Core</Name>
+        <Name>Youtube-Viewers.Core</Name>
       </ProjectReference>
-      <ProjectReference Include="..\Youtube-Viewers-Re.ProxyTools\Youtube-Viewers-Re.ProxyTools.csproj">
+      <ProjectReference Include="..\Youtube-Viewers.ProxyTools\Youtube-Viewers.ProxyTools.csproj">
         <Project>{41a40d8a-e5d8-4f37-b1d1-20e79aa470f4}</Project>
-        <Name>Youtube-Viewers-Re.ProxyTools</Name>
+        <Name>Youtube-Viewers.ProxyTools</Name>
       </ProjectReference>
     </ItemGroup>
     <ItemGroup>

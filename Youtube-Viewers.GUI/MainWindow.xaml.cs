@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-namespace Youtube_Viewers_Re.GUI
+namespace Youtube_Viewers.GUI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

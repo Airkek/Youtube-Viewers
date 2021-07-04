@@ -2,7 +2,7 @@
 using Leaf.xNet;
 using Newtonsoft.Json;
 
-namespace Youtube_Viewers_Re.Config
+namespace Youtube_Viewers.Config
 {
     public class ConfigScheme
     {

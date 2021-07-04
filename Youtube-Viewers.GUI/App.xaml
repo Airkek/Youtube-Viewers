@@ -1,7 +1,7 @@
-﻿<Application x:Class="Youtube_Viewers_Re.GUI.App"
+﻿<Application x:Class="Youtube_Viewers.GUI.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Youtube_Viewers_Re.GUI"
+             xmlns:local="clr-namespace:Youtube_Viewers.GUI"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <Style x:Key="flatButon" TargetType="{x:Type Button}">

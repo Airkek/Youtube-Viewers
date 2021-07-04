@@ -1,4 +1,4 @@
-﻿namespace Youtube_Viewers_Re.Core.Objects
+﻿namespace Youtube_Viewers.Core.Objects
 {
     public class VideoStats
     {

@@ -3,12 +3,12 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using Leaf.xNet;
-using Youtube_Viewers_Re.Core.Enums;
-using Youtube_Viewers_Re.Core.Objects;
-using Youtube_Viewers_Re.Core.Utils;
+using Youtube_Viewers.Core.Enums;
+using Youtube_Viewers.Core.Objects;
+using Youtube_Viewers.Core.Utils;
 using HttpRequest = Leaf.xNet.HttpRequest;
 
-namespace Youtube_Viewers_Re.Core
+namespace Youtube_Viewers.Core
 {
     public class ViewersCore
     {

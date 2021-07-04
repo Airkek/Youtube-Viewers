@@ -3,17 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Youtube-Viewers", "Youtube-Viewers\Youtube-Viewers.csproj", "{3030F0FA-3993-4DE9-806F-315B92D77762}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Youtube-Viewers.GUI", "Youtube-Viewers.GUI\Youtube-Viewers.GUI.csproj", "{605BDE2E-E6B1-4A8E-8406-90B591F9A13B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Youtube-Viewers-Re.GUI", "Youtube-Viewers-Re.GUI\Youtube-Viewers-Re.GUI.csproj", "{605BDE2E-E6B1-4A8E-8406-90B591F9A13B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Youtube-Viewers.CLI", "Youtube-Viewers.CLI\Youtube-Viewers.CLI.csproj", "{88C1E17B-52EF-4295-9CAB-2EB567728046}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Youtube-Viewers-Re.CLI", "Youtube-Viewers-Re.CLI\Youtube-Viewers-Re.CLI.csproj", "{88C1E17B-52EF-4295-9CAB-2EB567728046}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Youtube-Viewers.Core", "Youtube-Viewers.Core\Youtube-Viewers.Core.csproj", "{EB10F04B-2714-4091-A008-FF4BE980CC12}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Youtube-Viewers-Re.Core", "Youtube-Viewers-Re.Core\Youtube-Viewers-Re.Core.csproj", "{EB10F04B-2714-4091-A008-FF4BE980CC12}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Youtube-Viewers.Config", "Youtube-Viewers.Config\Youtube-Viewers.Config.csproj", "{85B86A90-8160-4033-881A-B85AED70ED61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Youtube-Viewers-Re.Config", "Youtube-Viewers-Re.Config\Youtube-Viewers-Re.Config.csproj", "{85B86A90-8160-4033-881A-B85AED70ED61}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Youtube-Viewers-Re.ProxyTools", "Youtube-Viewers-Re.ProxyTools\Youtube-Viewers-Re.ProxyTools.csproj", "{41A40D8A-E5D8-4F37-B1D1-20E79AA470F4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Youtube-Viewers.ProxyTools", "Youtube-Viewers.ProxyTools\Youtube-Viewers.ProxyTools.csproj", "{41A40D8A-E5D8-4F37-B1D1-20E79AA470F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3030F0FA-3993-4DE9-806F-315B92D77762}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3030F0FA-3993-4DE9-806F-315B92D77762}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3030F0FA-3993-4DE9-806F-315B92D77762}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3030F0FA-3993-4DE9-806F-315B92D77762}.Release|Any CPU.Build.0 = Release|Any CPU
 		{605BDE2E-E6B1-4A8E-8406-90B591F9A13B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{605BDE2E-E6B1-4A8E-8406-90B591F9A13B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{605BDE2E-E6B1-4A8E-8406-90B591F9A13B}.Release|Any CPU.ActiveCfg = Release|Any CPU

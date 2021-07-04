@@ -7,8 +7,8 @@
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
         <ProjectGuid>{605BDE2E-E6B1-4A8E-8406-90B591F9A13B}</ProjectGuid>
         <OutputType>WinExe</OutputType>
-        <RootNamespace>Youtube_Viewers_Re.GUI</RootNamespace>
-        <AssemblyName>Youtube_Viewers_Re.GUI</AssemblyName>
+        <RootNamespace>Youtube_Viewers.GUI</RootNamespace>
+        <AssemblyName>Youtube-Viewers.GUI</AssemblyName>
         <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
         <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

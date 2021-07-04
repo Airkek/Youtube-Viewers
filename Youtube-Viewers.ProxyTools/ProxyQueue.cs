@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Leaf.xNet;
 
-namespace Youtube_Viewers_Re.ProxyTools
+namespace Youtube_Viewers.ProxyTools
 {
     //TODO: Rewrite ProxyQueue
     public class ProxyQueue

@@ -3,14 +3,14 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using Leaf.xNet;
-using Youtube_Viewers_Re.CLI.Utils;
-using Youtube_Viewers_Re.Config;
-using Youtube_Viewers_Re.Core;
-using Youtube_Viewers_Re.Core.Enums;
-using Youtube_Viewers_Re.Core.Objects;
-using Youtube_Viewers_Re.ProxyTools;
+using Youtube_Viewers.CLI.Utils;
+using Youtube_Viewers.Config;
+using Youtube_Viewers.Core;
+using Youtube_Viewers.Core.Enums;
+using Youtube_Viewers.Core.Objects;
+using Youtube_Viewers.ProxyTools;
 
-namespace Youtube_Viewers_Re.CLI
+namespace Youtube_Viewers.CLI
 {
     internal static class Program
     {

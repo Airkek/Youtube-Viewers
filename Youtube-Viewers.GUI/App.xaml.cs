@@ -1,4 +1,4 @@
-﻿namespace Youtube_Viewers_Re.GUI
+﻿namespace Youtube_Viewers.GUI
 {
     /// <summary>
     /// Interaction logic for App.xaml
