@@ -2,6 +2,9 @@
 ## PayPal
 https://paypal.me/airgit
 
+## Patreon
+https://patreon.com/airkek
+
 ## Qiwi
 https://qiwi.com/n/keijia
 
