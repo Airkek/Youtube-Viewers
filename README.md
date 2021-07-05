@@ -15,3 +15,4 @@ You can use any types of IPv4 proxies including auth proxies (`user:pass@ip:port
 # Supporters <3
 - [Tran Mai Anh](https://github.com/tranmaianh75)
 - [EmperrorSherlock](https://github.com/EmperorSherlock)
+- @4seovn
