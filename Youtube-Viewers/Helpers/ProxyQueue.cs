@@ -3,10 +3,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Leaf.xNet;
 
-namespace Youtube_Viewers.ProxyTools
+namespace Youtube_Viewers.Helpers
 {
-    //TODO: Rewrite ProxyQueue
-    public class ProxyQueue
+    internal class ProxyQueue
     {
         private readonly object locker = new object();
         private ProxyClient[] plist;
@@ -125,21 +124,18 @@ namespace Youtube_Viewers.ProxyTools
 
         public ProxyClient Next()
         {
-            while (true)
-            {
-                if (proxies.Count == 0)
+            if (proxies.Count == 0)
+                lock (locker)
                 {
-                    lock (locker)
-                    {
-                        if (proxies.Count == 0)
-                            proxies = new ConcurrentQueue<ProxyClient>(plist);
-                    }
+                    if (proxies.Count == 0)
+                        proxies = new ConcurrentQueue<ProxyClient>(plist);
                 }
 
-                if (proxies.TryDequeue(out var res) && res != null)
-                    return res;
-            }
-            
+            ProxyClient res;
+
+            if (proxies.TryDequeue(out res) && res != null)
+                return res;
+            throw new HttpException();
         }
     }
 }
